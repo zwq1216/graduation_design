@@ -1,0 +1,69 @@
+.content {
+    /* height: 500px; */
+    width: 100%;
+    background: #ffffff;
+}
+
+.title {
+    height: 50px;
+    width: 100%;
+    text-align: center;
+    color: #EB7A67;
+    /* background: black; */
+    font-size: 30px;
+}
+
+.bottom {
+    height: 30px;
+    width: 100%;
+    align-content: center;
+}
+
+.bottom-con {
+    height: 29px;
+    width: 100px;
+    border: #EB7A67 solid 2px;
+    text-align: center;
+    color: #EB7A67;
+    align-content: center;
+    margin: 0 auto;
+}
+
+.bottom-con:hover {
+    cursor: pointer;
+}
+
+.body { 
+    width: 100%;
+    height: 200px;
+    /* background: red; */
+}
+
+.con {
+    width: 100%;
+    /* height: 500px; */
+    /* background: #aaaaff; */
+}
+
+.pro {
+    width: 100%;
+}
+
+.data {
+    width: 100%;
+}
+
+.discuss {
+    width: 100%;
+}
+
+.news {
+    width: 100%;
+}
+
+.end {
+    background: #DEDDC3;
+    height: 5px;
+    width: 100%;
+}
+

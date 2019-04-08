@@ -1,0 +1,17 @@
+.wheel {
+    height: 280px;
+    background: #cdafcd;
+}
+
+.ant-carousel .slick-slide {
+    text-align: center;
+    height: 280px;
+    line-height: 280px;
+    overflow: hidden;
+  }
+
+  .ant-carousel .slick-slide img {
+    vertical-align:top;
+    width: 100%;
+    height: 280px;
+  }

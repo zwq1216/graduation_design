@@ -1,0 +1,29 @@
+.com-div1-style {
+    width: 200px;
+    height: 200px;
+    float: left;
+    margin-left: 22.5px;
+    background: royalblue;
+}
+
+.com-div1-style:hover{
+    cursor: pointer;
+}
+
+.com-div1-avatar {
+    width: 200px;
+    height: 140px;
+    vertical-align:top;
+}
+
+.com-div1-p {
+    width: 200px;
+    height: 60px;
+}
+
+.com-div1-p {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    text-overflow:ellipsis;
+}
