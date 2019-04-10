@@ -1,17 +1,19 @@
 import React, {Component}from 'react';
+import {Link} from 'react-router-dom';
 import {
   Menu, Dropdown, Icon, message,
 } from 'antd';
 
 import '../../css/home/Nav.css';
 import user from '../../images/user.png';
+import history from '../global/history';
 
 const onClick = ({ key }) => {
-  if(key === 1){
-    message.info("个人中心");
+  if(key == 1){
+    history.push('/person');
   }
-  else if(key === 2){
-    message.info("修改密码");
+  else if(key == 2){
+    history.push('/changepassword');
   }
   else{
     message.info("退出登录");
@@ -31,9 +33,9 @@ class UserMenu extends Component {
   render(){
     return(
       <Dropdown overlay={menu}>
-        <a className="ant-dropdown-link" href="#">
+        <Link className="ant-dropdown-link" to="/person">
         <img src={user} className='user'/>
-        </a>
+        </Link>
     </Dropdown>
     )
   }

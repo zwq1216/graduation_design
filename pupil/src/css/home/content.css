@@ -20,13 +20,14 @@
 }
 
 .bottom-con {
-    height: 29px;
+    height: 26px;
     width: 100px;
     border: #EB7A67 solid 2px;
     text-align: center;
     color: #EB7A67;
     align-content: center;
     margin: 0 auto;
+    margin-top: 2px;
 }
 
 .bottom-con:hover {

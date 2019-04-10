@@ -1,6 +1,9 @@
 .nav {
     height: 50px;
     background: #ffffff;
+    border-top: #d4d4d4 solid 2px;
+    border-left: #d4d4d4 solid 1px;
+    border-right: #d4d4d4 solid 1px;
 }
 
 .logo {

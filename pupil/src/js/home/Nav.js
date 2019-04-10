@@ -4,7 +4,7 @@ import UserMenu from '../home/UserMenu';
 import '../../css/home/Nav.css';
 import logo from '../../images/nav.png';
 import message from '../../images/message.png';
-import user from '../../images/user.png';
+import history from '../global/history';
 
 
 const { Header } = Layout
@@ -15,7 +15,7 @@ class Scroll extends Component {
         this.handleClick = this.handleClick.bind(this);
     }
     handleClick(){
-        this.props.onClick(this.props.data);
+        history.push(this.props.obj.router);
     }
     render(){
         return (
@@ -27,18 +27,17 @@ class Scroll extends Component {
 }
 
 
-
 class Nav extends Component {
     constructor(props) {
         super(props);
         this.state = {
             "models": [
-                {id: 6, name: "下载中心"},
-                {id: 5, name: "新闻活动"},
-                {id: 4, name: "讨论区"},
-                {id: 3, name: "项目"},
-                {id: 2, name: "社团"},
-                {id: 1, name: "主页"},
+                {id: 6, name: "下载中心", router: '/data'},
+                {id: 5, name: "新闻活动", router: '/news'},
+                {id: 4, name: "讨论区", router: '/discuss'},
+                {id: 3, name: "项目", router: '/project'},
+                {id: 2, name: "社团", router: '/community'},
+                {id: 1, name: "主页", router: '/app'},
             ]
         }
         this.handleItemClick = this.handleItemClick.bind(this);
@@ -47,6 +46,10 @@ class Nav extends Component {
         this.setState({
             "classes": addClass
         });
+    }
+
+    messageClick(event){
+        history.push('/person/message');
     }
 
     render(){
@@ -66,6 +69,7 @@ class Nav extends Component {
                                     key={"key" + index}
                                     data={val.name}
                                     addClass={classes}
+                                    obj={val}
                                     onClick={this.handleItemClick}
                                     />
                                 }.bind(this))
@@ -76,7 +80,7 @@ class Nav extends Component {
                                 {/* <img src={user} className='user'/> */}
                                 <UserMenu/>
                             </div>
-                            <div className='top1'>
+                            <div className='top1' onClick={this.messageClick}>
                                 <img src={message} className='message'/>
                             </div>
                         </div>

@@ -1,0 +1,51 @@
+.con{
+    width: 100%;
+    margin-left: 10px;
+    margin-top: 10px;
+    background: #ffffff;
+}
+
+.con-top {
+    width: 100%;
+    height: 40px;
+}
+
+.con-top-title{
+    font-size: 20px;
+    font-weight: 700px;
+    margin-left: 20px;
+    margin-top: 10px;
+    float: left;
+}
+
+.con-top-button {
+    margin-top: 10px;
+    margin-right: 20px;
+    float: right;
+}
+
+.con-content{
+    margin-left: 20px;
+    margin-top: 10px;
+    background: #ffffff;
+}
+
+.con-content-c {
+    width: 100%;
+    height: 40px;
+    font-size: 16px;
+    font-weight: 500px;
+}
+
+.con-content-form {
+    width: 500px;
+}
+
+.con-content-1 {
+    width: 100%;
+    height: 550px;
+    margin-left: 20px;
+    margin-top: 10px;
+    background: #ffffff;
+    overflow-y:scroll;
+}
