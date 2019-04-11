@@ -36,6 +36,7 @@ class ApplyRecord(models.Model):
     status = models.IntegerField(default=0, choices=APPLY_STATUS, verbose_name='申请状态')
     deal_user = models.ForeignKey(User, default='', blank=True, null=True, related_name='dealuser',
                                   on_delete=models.SET_NULL, verbose_name='处理人')
+    users = models.ManyToManyField(User, related_name='many_user', verbose_name='发送人')
     add_time = models.DateTimeField(auto_now_add=True, verbose_name='添加时间')
 
     class Meta:

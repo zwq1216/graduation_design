@@ -22,10 +22,16 @@ from community_management.settings import MEDIA_ROOT
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    # 用户相关
+    path('api/users/', include(('users.urls', 'users'), namespace='users')),
 
     # 富文本配置
     path('ueditor/', include('DjangoUeditor.urls')),
 
     # 上传文件设置
     url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
+
+    # REST自带认证登录
+    path('auth-api', include('rest_framework.urls', namespace='rest_framework')),
+
 ]

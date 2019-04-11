@@ -1,18 +1,6 @@
 from django.db import models
 
 
-class Register(models.Model):
-    """注册信息"""
-
-    sno = models.CharField(max_length=20, blank=False, null=False, unique=True, verbose_name='学号/工号')
-    name = models.CharField(max_length=50, blank=False, null=False, verbose_name='学院名称')
-    no = models.CharField(max_length=30, blank=False, null=False, unique=True, verbose_name='所属编号')
-
-    class Meta:
-        verbose_name = '注册信息'
-        verbose_name_plural = verbose_name
-
-
 class College(models.Model):
     """学院信息"""
 
@@ -42,6 +30,18 @@ class Grade(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Register(models.Model):
+    """注册信息"""
+
+    sno = models.CharField(max_length=20, blank=False, null=False, unique=True, db_index=True, verbose_name='学号/工号')
+    name = models.CharField(max_length=30, verbose_name='真实姓名')
+    no = models.CharField(max_length=30, blank=False, null=False, verbose_name='所属编号')
+
+    class Meta:
+        verbose_name = '注册信息'
+        verbose_name_plural = verbose_name
 
 
 class DataPackage(models.Model):
