@@ -28,6 +28,9 @@ urlpatterns = [
     # 社团相关
     path('api/community/', include(('community.urls', 'community'), namespace='community')),
 
+    # 资料相关
+    path('api/data/', include(('data.urls', 'data'), namespace='data')),
+
     # 富文本配置
     path('ueditor/', include('DjangoUeditor.urls')),
 

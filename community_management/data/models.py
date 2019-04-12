@@ -8,7 +8,7 @@ from utils.constant import DATA_STATUS, DISCLOSURE
 class DataCategory(models.Model):
     """资料分类"""
 
-    name = models.CharField(max_length=50, verbose_name='分类名称')
+    name = models.CharField(max_length=50, unique=True, verbose_name='分类名称')
     add_time = models.DateTimeField(auto_now_add=True, verbose_name='添加时间')
 
     class Meta:
