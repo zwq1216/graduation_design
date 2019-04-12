@@ -8,7 +8,7 @@ class Community(models.Model):
     """社团信息"""
 
     no = models.CharField(max_length=30, blank=False, null=False, unique=True, verbose_name='社团编号')
-    name = models.CharField(max_length=50, blank=False, null=False, verbose_name='社团名称')
+    name = models.CharField(max_length=50, blank=False, null=False, unique=True, verbose_name='社团名称')
     objective = models.CharField(max_length=200, blank=False, null=False, verbose_name='社团宗旨')
     image = models.FileField(upload_to='community/%Y_%m', default="default/community.png")
     desc = models.TextField(max_length=500, default='这个社团的人很懒，什么都没留下', verbose_name='社团描述')
@@ -34,7 +34,7 @@ class RecentPlan(models.Model):
     title = models.CharField(max_length=50, blank=False, null=False, verbose_name='主题')
     file = models.FileField(upload_to='community_recent_plan/%Y_%m', default='', verbose_name='近期规划文件')
     community = models.ForeignKey(Community, on_delete=models.CASCADE, verbose_name='所属社团')
-    add_time = models.DateTimeField(auto_now_add=True, verbose_name='添加时间')
+    add_time = models.DateTimeField(auto_now=True, verbose_name='添加时间')
 
     class Meta:
         verbose_name = '社团近期规划'

@@ -2,9 +2,10 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 
 from .models import User, ApplyRecord
+from .local_model import College, Grade
 from .serializers import UserCreateSerializer, UserUpdateSerializer, UserAvastarSerializer, \
     UserRetrieveDestroySerializer, ApplyRecordCreateSerializer, ApplyRecordUpdateSerializer, \
-    ApplyRecordRetrieveDestroySerializer
+    ApplyRecordRetrieveDestroySerializer, CollegeListCreateSerializer, CollegeUpdateSerializer
 
 
 class UserCreateView(generics.CreateAPIView):
@@ -61,6 +62,27 @@ class ApplyRecordListView(generics.ListAPIView):
     """记录列表"""
     queryset = ApplyRecord.objects.all()
     serializer_class = ApplyRecordRetrieveDestroySerializer
+    permission_classes = (IsAuthenticated,)
+
+
+class CollegeListCreateView(generics.ListCreateAPIView):
+    """添加学院，学院列表"""
+    queryset = College.objects.all()
+    serializer_class = CollegeListCreateSerializer
+    permission_classes = (IsAuthenticated,)
+
+
+class CollegeRrtrieveDestoryView(generics.RetrieveDestroyAPIView):
+    """删除学院，学院详情"""
+    queryset = College.objects.all()
+    serializer_class = CollegeListCreateSerializer
+    permission_classes = (IsAuthenticated,)
+
+
+class CollegeUpdateView(generics.UpdateAPIView):
+    """更新学院信息"""
+    queryset = College.objects.all()
+    serializer_class = CollegeUpdateSerializer
     permission_classes = (IsAuthenticated,)
 
 

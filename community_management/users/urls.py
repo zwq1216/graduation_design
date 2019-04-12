@@ -1,7 +1,8 @@
 from django.urls import path
 
 from .views import UserCreateView, UserUpdateView, UserRetrieveDestroyView, UserListView, ApplyRecordCreateView, \
-    ApplyRecordUpdateView, ApplyRecordRetrieveDestroyView, ApplyRecordListView
+    ApplyRecordUpdateView, ApplyRecordRetrieveDestroyView, ApplyRecordListView, CollegeListCreateView, \
+    CollegeRrtrieveDestoryView, CollegeUpdateView
 
 
 # 用户相关
@@ -19,4 +20,14 @@ urlpatterns += [
     path('record/update/<int:pk>/', ApplyRecordUpdateView.as_view(), name='update-record'),
     path('record/ret_del/<int:pk>/', ApplyRecordRetrieveDestroyView.as_view(), name='ret-del-record'),
 ]
+
+# 学院相关
+urlpatterns += [
+    path('college/', CollegeListCreateView.as_view(), name='create-list-college'),
+    path('college/ret_del/<int:pk>/', CollegeRrtrieveDestoryView.as_view(), name='ret-del-college'),
+    path('college/update/<int:pk>/', CollegeUpdateView.as_view(), name='update-college'),
+]
+
+
+
 

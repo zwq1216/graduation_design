@@ -25,6 +25,9 @@ urlpatterns = [
     # 用户相关
     path('api/users/', include(('users.urls', 'users'), namespace='users')),
 
+    # 社团相关
+    path('api/community/', include(('community.urls', 'community'), namespace='community')),
+
     # 富文本配置
     path('ueditor/', include('DjangoUeditor.urls')),
 

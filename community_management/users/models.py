@@ -47,13 +47,16 @@ class ApplyRecord(models.Model):
 class Score(models.Model):
     """社团积分"""
     score = models.IntegerField(default=0, verbose_name='积分')
-    update_time = models.DateTimeField(auto_now_add=True, verbose_name='更新时间')
+    update_time = models.DateTimeField(auto_now=True, verbose_name='更新时间')
     community = models.OneToOneField(Community, on_delete=models.CASCADE, verbose_name='所属社团')
 
     class Meta:
         verbose_name = '社团积分'
         verbose_name_plural = verbose_name
         db_table = 'community_score'
+
+    def __str__(self):
+        return self.community.name
 
 
 class ScoreRecord(models.Model):

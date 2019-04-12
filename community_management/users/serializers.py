@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 
-from .local_model import Register, Grade
+from .local_model import Register, Grade, College
 from .models import User, ApplyRecord
 from utils.constant import ROLE, APPLY_TYPE, APPLY_STATUS
 
@@ -130,6 +130,25 @@ class ApplyRecordRetrieveDestroySerializer(serializers.ModelSerializer):
         return ret
 
 
+class CollegeListCreateSerializer(serializers.ModelSerializer):
+    add_time = serializers.DateTimeField(read_only=True, label='添加时间')
+
+    class Meta:
+        model = College
+        fields = ('id', 'name', 'no', 'add_time')
 
 
+class CollegeUpdateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(allow_null=True, allow_blank=True, label='学院名称')
+    no = serializers.CharField(allow_blank=True, allow_null=True, label='学院编号')
+    add_time = serializers.DateTimeField(read_only=True, label='添加时间')
+
+    class Meta:
+        model = College
+        fields = ('id', 'name', 'no', 'add_time')
+
+    def update(self, instance, validated_data):
+        validated_data = {k: v for k, v in validated_data.items() if v}
+
+        return super().update(instance, validated_data)
 
