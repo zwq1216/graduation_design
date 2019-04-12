@@ -1,3 +1,7 @@
 media/apply/*
+media/community/*
+media/community_fille/*
+media/community_recent_plan/*
+media/data/*
 *.pyc
 *.bak
