@@ -34,6 +34,9 @@ urlpatterns = [
     # 项目相关
     path('api/projects/', include(('projects.urls', 'projects'), namespace='projects')),
 
+    # 新闻活动相关
+    path('api/news/', include(('news.urls', 'news'), namespace='news')),
+
     # 富文本配置
     path('ueditor/', include('DjangoUeditor.urls')),
 
