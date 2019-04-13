@@ -81,6 +81,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'community_management.wsgi.application'
 AUTH_USER_MODEL = 'users.User'
+AUTHENTICATION_BACKENDS = (
+    'utils.custombackend.CustomBackend',
+)
 
 
 # Database

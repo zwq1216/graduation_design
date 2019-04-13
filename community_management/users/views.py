@@ -1,11 +1,40 @@
+from django.contrib.auth import login, logout, update_session_auth_hash
 from rest_framework import generics, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from .models import User, ApplyRecord
 from .local_model import College, Grade
 from .serializers import UserCreateSerializer, UserUpdateSerializer, UserAvastarSerializer, \
     UserRetrieveDestroySerializer, ApplyRecordCreateSerializer, ApplyRecordUpdateSerializer, \
-    ApplyRecordRetrieveDestroySerializer, CollegeListCreateSerializer, CollegeUpdateSerializer
+    ApplyRecordRetrieveDestroySerializer, CollegeListCreateSerializer, CollegeUpdateSerializer, LoginSerializer
+
+
+class LoginView(generics.GenericAPIView):
+    """用户登录"""
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            user = User.objects.get(username=request.data['username'])
+            login(request, user)
+            data = {"id": request.user.id, "username": request.user.username}
+            return Response(data=data, status=status.HTTP_200_OK)
+        else:
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutView(APIView):
+    """用户登出"""
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        logout(request)
+
+        return Response(data={}, status=status.HTTP_200_OK)
 
 
 class UserCreateView(generics.CreateAPIView):

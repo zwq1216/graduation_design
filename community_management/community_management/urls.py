@@ -37,6 +37,9 @@ urlpatterns = [
     # 新闻活动相关
     path('api/news/', include(('news.urls', 'news'), namespace='news')),
 
+    # 讨论相关
+    path('api/discuss/', include(('discuss.urls', 'discuss'), namespace='discuss')),
+
     # 富文本配置
     path('ueditor/', include('DjangoUeditor.urls')),
 

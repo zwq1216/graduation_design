@@ -4,6 +4,41 @@ from django.contrib.auth.hashers import make_password
 from .local_model import Register, Grade, College
 from .models import User, ApplyRecord
 from utils.constant import ROLE, APPLY_TYPE, APPLY_STATUS
+from community_management.settings import DEBUG
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True, label='用户名')
+    password = serializers.CharField(required=True, label='密码')
+    code = serializers.CharField(required=True, label='验证码')
+
+    def validate(self, attrs):
+
+        username = attrs['username']
+        password = attrs['password']
+        code = attrs['code'].upper()
+        # generate_code = self.context['request'].session.get("valid_code", "").upper()
+
+        if DEBUG:
+            valid_code = '666'
+        else:
+            # valid_code = generate_code
+            valid_code = '666'
+
+        if code == valid_code:
+            try:
+                user = User.objects.get(username=username)
+
+                if user.check_password(password):
+                   pass
+                else:
+                    raise serializers.ValidationError({"error": ["用户名或密码错误"]})
+            except User.DoesNotExist:
+                raise serializers.ValidationError({'error': ['不存在该用户']})
+        else:
+            raise serializers.ValidationError({'error': ['验证码错误']})
+
+        return attrs
 
 
 class UserCreateSerializer(serializers.ModelSerializer):

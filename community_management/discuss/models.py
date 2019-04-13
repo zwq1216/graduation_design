@@ -18,6 +18,9 @@ class DiscussTheme(models.Model):
         verbose_name = '主题帖'
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        return self.title
+
 
 class ReplayTheme(models.Model):
     """回帖"""

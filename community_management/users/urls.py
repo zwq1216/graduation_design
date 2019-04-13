@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import UserCreateView, UserUpdateView, UserRetrieveDestroyView, UserListView, ApplyRecordCreateView, \
     ApplyRecordUpdateView, ApplyRecordRetrieveDestroyView, ApplyRecordListView, CollegeListCreateView, \
-    CollegeRrtrieveDestoryView, CollegeUpdateView
+    CollegeRrtrieveDestoryView, CollegeUpdateView, LoginView, LogoutView
 
 
 # 用户相关
@@ -11,6 +11,12 @@ urlpatterns = [
     path('create/', UserCreateView.as_view(), name='create-user'),
     path('update/<int:pk>/', UserUpdateView.as_view(), name='update-user'),
     path('ret_del/<int:pk>/', UserRetrieveDestroyView.as_view(), name='ret-del-user'),
+]
+
+# 用户全局配置相关
+urlpatterns += [
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]
 
 # 申请记录相关
