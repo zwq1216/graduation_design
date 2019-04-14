@@ -133,9 +133,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
+# React配置
+REACT_APP_DIR = os.path.join(BASE_DIR, 'pupil')
+
+STATICFILES_DIRS = [
+    os.path.join(REACT_APP_DIR, 'build', 'static'),
+]
+INDEXHTML = os.path.join(REACT_APP_DIR, 'build', 'index.html')
+
+# 静态文件配置
 STATIC_URL = '/static/'
 
-
+# 上传文件参数配置
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 

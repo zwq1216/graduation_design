@@ -1,14 +1,34 @@
-from django.contrib.auth import login, logout, update_session_auth_hash
+from django.contrib.auth import login, logout
+from django.http import HttpResponse
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+from community_management.settings import INDEXHTML
 from .models import User, ApplyRecord
-from .local_model import College, Grade
+from .local_model import College
 from .serializers import UserCreateSerializer, UserUpdateSerializer, UserAvastarSerializer, \
     UserRetrieveDestroySerializer, ApplyRecordCreateSerializer, ApplyRecordUpdateSerializer, \
     ApplyRecordRetrieveDestroySerializer, CollegeListCreateSerializer, CollegeUpdateSerializer, LoginSerializer
+
+
+class HomeView(APIView):
+    """系统入口"""
+    def get(self, request):
+        try:
+            with open(INDEXHTML, encoding='utf-8') as f:
+                return HttpResponse(f.read())
+
+        except IOError:
+            return HttpResponse(
+                """
+                This URL is only used when you have built the production
+                version of the app. Visit http://localhost:3000/ instead, or
+                run `yarn run build` to test the production version.
+                """,
+                status=501,
+            )
 
 
 class LoginView(generics.GenericAPIView):
@@ -21,7 +41,7 @@ class LoginView(generics.GenericAPIView):
         if serializer.is_valid():
             user = User.objects.get(username=request.data['username'])
             login(request, user)
-            data = {"id": request.user.id, "username": request.user.username}
+            data = {"id": request.user.id, "username": request.user.username, 'role': user.role}
             return Response(data=data, status=status.HTTP_200_OK)
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)

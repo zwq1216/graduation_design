@@ -18,9 +18,13 @@ from django.urls import path, include
 from django.conf.urls import url
 from django.views.static import serve
 from community_management.settings import MEDIA_ROOT
+from users.views import HomeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # 系统入口
+    path('', HomeView.as_view(), name='index'),
 
     # 用户相关
     path('api/users/', include(('users.urls', 'users'), namespace='users')),
