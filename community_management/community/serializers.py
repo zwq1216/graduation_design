@@ -4,8 +4,8 @@ from collections import OrderedDict
 from datetime import datetime
 
 from utils.constant import COMMUNITY_TYPE
-from .models import Community, CommunityFile, RecentPlan
-from users.models import ScoreRecord, Score
+from .models import Community, CommunityFile, RecentPlan, Honor, Announcement
+from users.models import ScoreRecord
 
 
 class CommunityCreateSerializer(serializers.ModelSerializer):
@@ -69,14 +69,30 @@ class CommunityFileSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CommunityRetrieveDestroySerializer(serializers.ModelSerializer):
+class HonorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Honor
+        fields = '__all__'
+
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Announcement
+        fields = '__all__'
+
+
+class CommunityRetrieveSerializer(serializers.ModelSerializer):
     college = serializers.CharField(source='college.name')
     files = serializers.SerializerMethodField(label='社团相关文件')
+    honor = serializers.SerializerMethodField(label='社团荣誉')
+    announcement = serializers.SerializerMethodField(label='社团公告')
 
     class Meta:
         model = Community
         fields = ('id', 'no', 'name', 'objective', 'image', 'desc', 'plan_count', 'real_count', 'college',
-                  'community_type', 'files')
+                  'community_type', 'files', 'score', 'honor', 'announcement')
 
     def get_files(self, obj):
         request = self.context['request']
@@ -91,13 +107,25 @@ class CommunityRetrieveDestroySerializer(serializers.ModelSerializer):
         if teacher:
             teacher_file = agree + '://' + host + CommunityFileSerializer(teacher).data['file']
         if community:
-            community_file = agree + '://' + host + CommunityFileSerializer(teacher).data['file']
+            community_file =  CommunityFileSerializer(teacher).data['file']
         if rule:
             community_file_rule = agree + '://' + host + CommunityFileSerializer(teacher).data['file']
         data = {'teacher_file': teacher_file, 'community_file': community_file,
                 'community_file_rule': community_file_rule}
 
         return data
+
+    def get_honor(self, obj):
+        queryset = Honor.objects.filter(community=obj)
+        serializer = HonorSerializer(queryset, many=True)
+
+        return serializer.data
+
+    def get_announcement(self, obj):
+        queryset = Announcement.objects.filter(community=obj).order_by('-add_time')[:5]
+        serializer = AnnouncementSerializer(queryset, many=True)
+
+        return serializer.data
 
 
 class CommunityUpdateSerializer(serializers.ModelSerializer):
@@ -130,17 +158,17 @@ class CommunityUpdateSerializer(serializers.ModelSerializer):
         return ret
 
 
-class ScoreSerializer(serializers.ModelSerializer):
-    update_time = serializers.DateTimeField(read_only=True, label='最后一次的更新时间')
-
-    class Meta:
-        model = Score
-        fields = ('id', 'score', 'update_time', 'community')
-
-    def update(self, instance, validated_data):
-        validated_data = {k: v for k, v in validated_data.items() if v}
-
-        return super().update(instance, validated_data)
+# class ScoreSerializer(serializers.ModelSerializer):
+#     update_time = serializers.DateTimeField(read_only=True, label='最后一次的更新时间')
+#
+#     class Meta:
+#         model = Score
+#         fields = ('id', 'score', 'update_time', 'community')
+#
+#     def update(self, instance, validated_data):
+#         validated_data = {k: v for k, v in validated_data.items() if v}
+#
+#         return super().update(instance, validated_data)
 
 
 class ScoreRecordSerializer(serializers.ModelSerializer):

@@ -44,25 +44,25 @@ class ApplyRecord(models.Model):
         verbose_name_plural = verbose_name
 
 
-class Score(models.Model):
-    """社团积分"""
-    score = models.IntegerField(default=0, verbose_name='积分')
-    update_time = models.DateTimeField(auto_now=True, verbose_name='更新时间')
-    community = models.OneToOneField(Community, on_delete=models.CASCADE, verbose_name='所属社团')
-
-    class Meta:
-        verbose_name = '社团积分'
-        verbose_name_plural = verbose_name
-        db_table = 'community_score'
-
-    def __str__(self):
-        return self.community.name
+# class Score(models.Model):
+#     """社团积分"""
+#     score = models.IntegerField(default=0, verbose_name='积分')
+#     update_time = models.DateTimeField(auto_now=True, verbose_name='更新时间')
+#     community = models.OneToOneField(Community, on_delete=models.CASCADE, verbose_name='所属社团')
+#
+#     class Meta:
+#         verbose_name = '社团积分'
+#         verbose_name_plural = verbose_name
+#         db_table = 'community_score'
+#
+#     def __str__(self):
+#         return self.community.name
 
 
 class ScoreRecord(models.Model):
     """扣除积分的记录"""
 
-    score = models.ForeignKey(Score, on_delete=models.CASCADE, verbose_name='所属积分')
+    community = models.ForeignKey(Community, on_delete=models.CASCADE, verbose_name='所属社团')
     deduct = models.IntegerField(default=0, verbose_name='扣除的积分')
     desc = models.TextField(max_length=500, verbose_name='原因')
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='用户')

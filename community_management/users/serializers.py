@@ -1,9 +1,11 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
+from django.db.models import Q
 
 from .local_model import Register, Grade, College
 from .models import User, ApplyRecord
 from utils.constant import ROLE, APPLY_TYPE, APPLY_STATUS
+from utils.validation import is_valid_password
 from community_management.settings import DEBUG
 
 
@@ -17,26 +19,23 @@ class LoginSerializer(serializers.Serializer):
         username = attrs['username']
         password = attrs['password']
         code = attrs['code'].upper()
-        # generate_code = self.context['request'].session.get("valid_code", "").upper()
+        generate_code = self.context['request'].session.get("valid_code", "").upper()
 
-        if DEBUG:
-            valid_code = '666'
+        # if DEBUG:
+        #     valid_code = '6666'
+        # else:
+        #     valid_code = generate_code
+
+        if code == generate_code:
+
+            user = User.objects.filter(Q(username=username) | Q(sno=username)).first()
+            if user:
+                if not user.check_password(password):
+                    raise serializers.ValidationError({"username": ["用户名或密码错误"]})
+            else:
+                raise serializers.ValidationError({"username": ["用户名或密码错误"]})
         else:
-            # valid_code = generate_code
-            valid_code = '666'
-
-        if code == valid_code:
-            try:
-                user = User.objects.get(username=username)
-
-                if user.check_password(password):
-                   pass
-                else:
-                    raise serializers.ValidationError({"error": ["用户名或密码错误"]})
-            except User.DoesNotExist:
-                raise serializers.ValidationError({'error': ['不存在该用户']})
-        else:
-            raise serializers.ValidationError({'error': ['验证码错误']})
+            raise serializers.ValidationError({'code': ['验证码错误']})
 
         return attrs
 
@@ -50,8 +49,27 @@ class UserCreateSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'sno', 'username', 'password')
 
-    def validate_password(self, password):
+    def validate_sno(self, sno):
+        obj = User.objects.filter(sno=sno).first()
+        if obj:
+            raise serializers.ValidationError('该账号已经注册。')
 
+        return sno
+
+    def validate_username(self, username):
+        if username and len(username) > 20:
+            raise serializers.ValidationError('用户名最多20个字符。')
+
+        obj = User.objects.filter(username=username).first()
+
+        if obj:
+            raise serializers.ValidationError('用户名已经存在。')
+
+        return username
+
+    def validate_password(self, password):
+        if not is_valid_password(password):
+            raise serializers.ValidationError('请输入字母（区分大小写）、数字、符号中的至少两种8-64个字符')
         return make_password(password)
 
     def create(self, validated_data):

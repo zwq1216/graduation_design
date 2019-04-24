@@ -136,6 +136,8 @@ class DataPackageSerializer(serializers.ModelSerializer):
 
 class DataDetailSerializer(serializers.ModelSerializer):
     data = serializers.SerializerMethodField()
+    add_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label='添加时间')
+    type = serializers.CharField(source='type.name', label='所属分类')
 
     class Meta:
         model = Data
@@ -150,4 +152,14 @@ class DataDetailSerializer(serializers.ModelSerializer):
             return agree + '://' + host + DataPackageSerializer(data).data['file']
 
         return None
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        for k, v in DATA_STATUS:
+            if ret['status'] == k:
+                ret['status'] = v
+        for k, v in DISCLOSURE:
+            if ret['disclosure'] == k:
+                ret['disclosure'] = v
+        return ret
 

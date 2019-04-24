@@ -5,6 +5,7 @@ import {
     PublicDiscuss, MyDiscuss, PubDiscuss, CommuntyDiscuss, ManagerDiscuss
 } from './Discuss';
 import history from '../own/history';
+import DiscussIndex from './Index';
 
 
 class DiscussRouter extends Component {
@@ -16,6 +17,9 @@ class DiscussRouter extends Component {
                 <div className="community_nav">
                     <Switch>
                         <Route exact path='/discuss' component={(match) => {
+                            return <DiscussIndex match={match}/>
+                        }} />
+                        <Route exact path='/discuss/all' component={(match) => {
                             return <PublicDiscuss match={match}/>
                         }} />
                         <Route exact path='/discuss/my' component={(match) => {

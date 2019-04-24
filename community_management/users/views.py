@@ -1,9 +1,11 @@
 from django.contrib.auth import login, logout
 from django.http import HttpResponse
+from django.db.models import Q
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+import random
 
 from community_management.settings import INDEXHTML
 from .models import User, ApplyRecord
@@ -31,17 +33,35 @@ class HomeView(APIView):
             )
 
 
+class Captcha(APIView):
+    """生成验证码"""
+    def get(self, request):
+        chars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q',
+                 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L',
+                 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+        code = ''
+        for i in range(4):
+            char = chars[random.randint(0, 57)]
+            code += str(char)
+        request.session["valid_code"] = code
+        return Response(data={'code': code}, status=status.HTTP_200_OK)
+
+
 class LoginView(generics.GenericAPIView):
     """用户登录"""
     serializer_class = LoginSerializer
 
     def post(self, request):
+
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(data=request.data, context={'request': request})
+
         if serializer.is_valid():
-            user = User.objects.get(username=request.data['username'])
+            user = User.objects.get(Q(username=request.data['username']) | Q(sno=request.data['username']))
             login(request, user)
-            data = {"id": request.user.id, "username": request.user.username, 'role': user.role}
+
+            data = {"id": request.user.id, "username": request.user.username,
+                    'role': request.user.role, 'image': request.user.image.url}
             return Response(data=data, status=status.HTTP_200_OK)
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -12,7 +12,7 @@ class CommunityCard extends Component {
                 </div>
                 <div className='com-div1-p'>
                     <p>{this.props.data}</p>
-                    <p>积分：89</p>
+                    <p>积分：{this.props.score}</p>
                 </div>
            </div>
         )

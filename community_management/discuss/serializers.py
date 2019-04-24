@@ -17,7 +17,9 @@ class DiscussCreateSerializer(serializers.ModelSerializer):
 
 
 class DiscussDetailSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(source='user.username')
+    user = serializers.CharField(source='user.username', label='用户姓名')
+    catagory = serializers.CharField(source='catagory.name', label='所属分类')
+    add_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label='添加时间')
 
     class Meta:
         model = DiscussTheme

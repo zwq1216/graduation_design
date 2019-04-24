@@ -4,7 +4,9 @@ import { Router, Route, Switch} from 'react-router-dom';
 import {
     AllNews, PubNews, ManagerNews
 } from './News';
+import NewsIndex from './Index';
 import history from '../own/history';
+import NewsDetail from './detail';
 
 
 class NewsRouter extends Component {
@@ -16,7 +18,13 @@ class NewsRouter extends Component {
                 <div className="community_nav">
                     <Switch>
                         <Route exact path='/news' component={(match) => {
+                            return <NewsIndex match={match}/>
+                        }} />
+                        <Route exact path='/news/all' component={(match) => {
                             return <AllNews match={match}/>
+                        }} />
+                        <Route exact path='/news/detail/:id' component={(match) => {
+                            return <NewsDetail match={match}/>
                         }} />
                         <Route exact path='/news/pub' component={(match) => {
                             return <PubNews match={match}/>

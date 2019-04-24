@@ -2,9 +2,9 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Community, RecentPlan
-from users.models import Score, ScoreRecord
-from .serializers import CommunityCreateSerializer, CommunityRetrieveDestroySerializer, CommunityUpdateSerializer, \
-    ScoreSerializer, ScoreRecordSerializer, RecentPlanCreateUpdateSerializer, RecentPlanRetrieveDestroySerializer
+from users.models import ScoreRecord
+from .serializers import CommunityCreateSerializer, CommunityRetrieveSerializer, CommunityUpdateSerializer, \
+    ScoreRecordSerializer, RecentPlanCreateUpdateSerializer, RecentPlanRetrieveDestroySerializer
 
 
 class CommunityCreateView(generics.CreateAPIView):
@@ -13,10 +13,10 @@ class CommunityCreateView(generics.CreateAPIView):
     permission_classes = (IsAuthenticated,)
 
 
-class CommunityRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+class CommunityRetrieveView(generics.RetrieveAPIView):
     """社团详情、删除社团"""
     queryset = Community.objects.all()
-    serializer_class = CommunityRetrieveDestroySerializer
+    serializer_class = CommunityRetrieveSerializer
     permission_classes = (IsAuthenticated,)
 
 
@@ -30,22 +30,28 @@ class CommunityUpdateView(generics.UpdateAPIView):
 class CommunityListView(generics.ListAPIView):
     """社团列表"""
     queryset = Community.objects.all()
-    serializer_class = CommunityRetrieveDestroySerializer
+    serializer_class = CommunityRetrieveSerializer
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        top5 = self.request.GET.get('top5', None)
+        if top5:
+            return self.queryset.all().order_by('-score')[:5]
 
-class ScoreListCreateView(generics.ListCreateAPIView):
-    """社团积分创建、社团积分列表"""
-    queryset = Score.objects.all()
-    serializer_class = ScoreSerializer
-    permission_classes = (IsAuthenticated,)
+        return self.queryset.all().order_by
+
+# class ScoreListCreateView(generics.ListCreateAPIView):
+#     """社团积分创建、社团积分列表"""
+#     queryset = Score.objects.all()
+#     serializer_class = ScoreSerializer
+#     permission_classes = (IsAuthenticated,)
 
 
-class ScoreRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    """社团详情、删除社团、更新社团信息"""
-    queryset = Score.objects.all()
-    serializer_class = ScoreSerializer
-    permission_classes = (IsAuthenticated,)
+# class ScoreRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+#     """社团详情、删除社团、更新社团信息"""
+#     queryset = Score.objects.all()
+#     serializer_class = ScoreSerializer
+#     permission_classes = (IsAuthenticated,)
 
 
 class ScoreRecordListCreateView(generics.ListCreateAPIView):

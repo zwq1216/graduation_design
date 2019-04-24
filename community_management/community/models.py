@@ -17,6 +17,7 @@ class Community(models.Model):
     plan_count = models.IntegerField(default=0, verbose_name='计划人数')
     real_count = models.IntegerField(default=0, verbose_name='实际人数')
     is_dalete = models.BooleanField(default=False, verbose_name='删除')
+    score = models.IntegerField(default=100, verbose_name='社团积分')
     create_date = models.DateTimeField(auto_now_add=True, verbose_name='创建社团日期')
     dis_date = models.DateTimeField(blank=True, null=True, verbose_name='解散社团日期')
 
@@ -61,5 +62,26 @@ class CommunityFile(models.Model):
         return self.name
 
 
+class Announcement(models.Model):
+    """社团公告"""
+    title = models.CharField(max_length=20, verbose_name='公告标题')
+    desc = models.CharField(max_length=200, verbose_name='公告内容')
+    community = models.ForeignKey(Community, on_delete=models.CASCADE, verbose_name='所属社团')
+    add_time = models.DateTimeField(auto_now_add=True, verbose_name='添加时间')
+
+    class Meta:
+        verbose_name = '社团公告'
+        verbose_name_plural = verbose_name
+
+
+class Honor(models.Model):
+    """社团荣誉"""
+    name = models.CharField(max_length=30, verbose_name='荣誉名称')
+    date = models.DateTimeField(verbose_name='荣誉获取时间')
+    community = models.ForeignKey(Community, on_delete=models.CASCADE, verbose_name='所属社团')
+
+    class Meta:
+        verbose_name = '社团荣誉'
+        verbose_name_plural = verbose_name
 
 

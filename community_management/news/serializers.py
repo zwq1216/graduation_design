@@ -80,11 +80,11 @@ class NewsUpdateSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-# class NewsImageSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = NewsImages
-#         fields = '__all__'
+class NewsImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = NewsImages
+        fields = '__all__'
 
 
 # class NewsRetrieveDestroySerializer(serializers.ModelSerializer):
@@ -100,10 +100,34 @@ class NewsUpdateSerializer(serializers.ModelSerializer):
     #
     #     return {}
 
-class NewsRetrieveDestroySerializer(serializers.ModelSerializer):
+class NewsRetrieveSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source='user.username', label='用户姓名')
+    add_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label='添加时间')
+    images = serializers.SerializerMethodField()
 
     class Meta:
         model = News
         fields = '__all__'
+
+    def get_images(self, obj):
+        queryset = NewsImages.objects.filter(news=obj)
+
+        serializer = NewsImageSerializer(queryset, many=True)
+
+        return serializer.data
+
+    def to_representation(self, instance):
+        request = self.context['request']
+        agree = request.scheme
+        host = request.META['HTTP_HOST']
+        ret = super().to_representation(instance)
+        for i, images in enumerate(ret['images']):
+            if images:
+                ret['images'][i]['file'] = agree + '://' + host + images['file']
+
+        return ret
+
+
+
 
 

@@ -5,6 +5,7 @@ import {
     AllData, ShareData, ManagerData
 } from './Data';
 import history from '../own/history';
+import DataIndex from './Index'
 
 
 class DiscussRouter extends Component {
@@ -16,6 +17,9 @@ class DiscussRouter extends Component {
                 <div className="community_nav">
                     <Switch>
                         <Route exact path='/data' component={(match) => {
+                            return <DataIndex match={match}/>
+                        }} />
+                        <Route exact path='/data/all' component={(match) => {
                             return <AllData match={match}/>
                         }} />
                         <Route exact path='/data/share' component={(match) => {

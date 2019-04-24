@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Layout} from 'antd';
-
+import {Link} from 'react-router-dom';
+import Fetch from '../own/Fetch';
 import CommunityCard from '../global/Card';
 import IndexTable from '../global/Table';
 import '../../css/home/content.css';
@@ -22,9 +23,11 @@ class Bottom extends Component {
     render(){
         return(
             <div className='bottom'>
+              <Link to={this.props.href}>
                 <div className='bottom-con'>
                     {this.props.content}
                 </div>
+              </Link>
             </div>
         )
     }
@@ -39,18 +42,23 @@ class End extends Component {
 }
 
 class CommunityBody extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            "models": [
-                {id: 6, name: "开拓者社团1"},
-                {id: 5, name: "开拓者社团2"},
-                {id: 4, name: "开拓者社团3"},
-                {id: 3, name: "开拓者社团4"},
-                {id: 2, name: "开拓者社团5"},
-            ]
-        }
+    constructor(props){
+      super(props);
+      this.state = {
+        models: []
+      }
     }
+    componentDidMount(){
+      Fetch.get('/api/community/?top5=1')
+      .then((data) => {
+          this.setState({
+            models: data
+          })
+      }).catch(err=>{
+        console.log(err)
+      })
+    }
+    
     render(){
         const model = this.state.models;
         return (
@@ -58,9 +66,10 @@ class CommunityBody extends Component {
                 {
                     model.map(function(val, index, array){
                         return <CommunityCard
-                        key={"key" + index}
+                        key={val.id}
                         data={val.name}
-                        img={image1}
+                        img={val.image}
+                        score={val.score}
                         />
                     })
                 }
@@ -83,6 +92,24 @@ class Community extends Component {
 }
 
 class Project extends Component {
+    constructor(props){
+      super(props);
+      this.state = {
+        data: []
+      }
+    }
+    componentDidMount(){
+      Fetch.get('/api/projects/?top5=1')
+      .then((data) => {
+          this.setState({
+            data: data
+          })
+      }).catch(err=>{
+        console.log(err)
+      })
+    }
+   
+
     render(){
         const columns = [{
             title: '项目名称',
@@ -90,37 +117,29 @@ class Project extends Component {
             width: 100,
           }, {
             title: '项目描述',
-            dataIndex: 'age',
+            dataIndex: 'desc',
             width: 250,
-          }, {
-            title: '发布时间',
-            dataIndex: 'age',
-            width: 100,
           },{
             title: '发布者',
-            dataIndex: 'age',
+            dataIndex: 'pub_user',
             width: 70,
           },
           {
             title: '状态',
-            dataIndex: 'address',
+            dataIndex: 'status',
             width: 70,
+          },{
+            title: '发布时间',
+            dataIndex: 'add_time',
+            width: 100,
           }];
           
-          const data = [];
-          for (let i = 0; i < 5; i++) {
-            data.push({
-              key: i,
-              name: `Edward King ${i}`,
-              age: 32,
-              address: `London, Park Lane no. ${i}`,
-            });
-          }
+          const data = this.state.data;
         return(
             <Layout className='pro'>
                 <Title title='最新项目'/>
-                <IndexTable columns={columns} data={data}/>
-                <Bottom content='更多项目'/>
+                <IndexTable rowKey='id' columns={columns} data={data}/>
+                <Bottom content='更多项目' href='/project'/>
                 <End/>
             </Layout>
         )
@@ -128,44 +147,57 @@ class Project extends Component {
 }
 
 class Data extends Component {
+    constructor(props){
+      super(props);
+      this.state = {
+        data: []
+      }
+    }
+    componentDidMount(){
+      Fetch.get('/api/data/?top5=1')
+      .then((data) => {
+        console.log(data);
+          this.setState({
+            data: data
+          })
+      }).catch(err=>{
+        console.log(err)
+      })
+    }
     render(){
         const columns = [{
-            title: '项目名称',
+            title: '资料名称',
             dataIndex: 'name',
             width: 100,
           }, {
-            title: '项目描述',
-            dataIndex: 'age',
+            title: '资料描述',
+            dataIndex: 'desc',
             width: 250,
           }, {
-            title: '发布时间',
-            dataIndex: 'age',
+            title: '所属分类',
+            dataIndex: 'type',
             width: 100,
           },{
-            title: '发布者',
-            dataIndex: 'age',
-            width: 70,
+            title: '下载',
+            width:70,
+            dataIndex: 'data',
+            render: (text) => (
+              <a href={text}>下载</a>
+            )
           },
           {
-            title: '状态',
-            dataIndex: 'address',
+            title: '发布时间',
+            dataIndex: 'add_time',
             width: 70,
           }];
           
-          const data = [];
-          for (let i = 0; i < 5; i++) {
-            data.push({
-              key: i,
-              name: `Edward King ${i}`,
-              age: 32,
-              address: `London, Park Lane no. ${i}`,
-            });
-          }
+          const data = this.state.data;
+         
         return(
             <Layout className='data'>
                 <Title title='最新资料'/>
-                <IndexTable columns={columns} data={data}/>
-                <Bottom content='更多资料'/>
+                <IndexTable rowKey='id' columns={columns} data={data}/>
+                <Bottom content='更多资料' href='/data'/>
                 <End/>
             </Layout>
         )
@@ -173,44 +205,50 @@ class Data extends Component {
 }
 
 class Discuss extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      data: []
+    }
+  }
+  componentDidMount(){
+    Fetch.get('/api/discuss/?top5=1')
+    .then((data) => {
+      console.log(data);
+        this.setState({
+          data: data
+        })
+    }).catch(err=>{
+      console.log(err)
+    })
+  }
+  
     render(){
         const columns = [{
-            title: '项目名称',
-            dataIndex: 'name',
+            title: '主贴标题',
+            dataIndex: 'title',
             width: 100,
           }, {
-            title: '项目描述',
-            dataIndex: 'age',
-            width: 250,
-          }, {
-            title: '发布时间',
-            dataIndex: 'age',
+            title: '所属分类',
+            dataIndex: 'catagory',
             width: 100,
-          },{
+          }, {
             title: '发布者',
-            dataIndex: 'age',
+            dataIndex: 'user',
             width: 70,
           },
           {
-            title: '状态',
-            dataIndex: 'address',
+            title: '发布时间',
+            dataIndex: 'add_time',
             width: 70,
           }];
           
-          const data = [];
-          for (let i = 0; i < 5; i++) {
-            data.push({
-              key: i,
-              name: `Edward King ${i}`,
-              age: 32,
-              address: `London, Park Lane no. ${i}`,
-            });
-          }
+          const data = this.state.data;
         return(
             <Layout className='discuss'>
                 <Title title='最新讨论'/>
-                <IndexTable columns={columns} data={data}/>
-                <Bottom content='更多讨论'/>
+                <IndexTable rowKey='id' columns={columns} data={data}/>
+                <Bottom content='更多讨论' href='/discuss'/>
                 <End/>
             </Layout>
         )
@@ -218,44 +256,56 @@ class Discuss extends Component {
 }
 
 class News extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      data: []
+    }
+  }
+  componentDidMount(){
+    Fetch.get('/api/news/?top5=1')
+    .then((data) => {
+      console.log(data);
+        this.setState({
+          data: data
+        })
+    }).catch(err=>{
+      console.log(err)
+    })
+  }
     render(){
         const columns = [{
-            title: '项目名称',
+            title: '新闻活动名称',
             dataIndex: 'name',
             width: 100,
           }, {
-            title: '项目描述',
-            dataIndex: 'age',
-            width: 250,
+            title: '新闻活动描述',
+            width:250,
+            dataIndex: 'desc',
+            render: (text) => (
+              <div>{text.slice(0, 20)}</div>
+            )
           }, {
-            title: '发布时间',
-            dataIndex: 'age',
+            title: '浏览量',
+            dataIndex: 'count',
             width: 100,
           },{
             title: '发布者',
-            dataIndex: 'age',
+            dataIndex: 'user',
             width: 70,
           },
           {
-            title: '状态',
-            dataIndex: 'address',
+            title: '发布时间',
+            dataIndex: 'add_time',
             width: 70,
           }];
           
-          const data = [];
-          for (let i = 0; i < 5; i++) {
-            data.push({
-              key: i,
-              name: `Edward King ${i}`,
-              age: 32,
-              address: `London, Park Lane no. ${i}`,
-            });
-          }
+        const data = this.state.data;
         return(
             <Layout className='news'>
                 <Title title='最新新闻活动'/>
-                <IndexTable columns={columns} data={data}/>
-                <Bottom content='更多新闻活动'/>
+                <IndexTable rowKey='id' columns={columns} data={data}/>
+                <Bottom content='更多新闻活动' href='/news'/>
                 <End/>
             </Layout>
         )

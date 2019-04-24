@@ -1,5 +1,6 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from utils.filter_backends import CustomDjangoFilterBackend
 
 from .models import DiscussTheme, ReplayTheme
 from .serializers import DiscussCreateSerializer, DiscussDetailSerializer, ReplayCreateSerializer, \
@@ -24,6 +25,16 @@ class DiscussListView(generics.ListAPIView):
     queryset = DiscussTheme.objects.all()
     serializer_class = DiscussDetailSerializer
     permission_classes = (IsAuthenticated,)
+    filter_backends = (CustomDjangoFilterBackend,)
+    filterset_fields = ('title',)
+
+    def get_queryset(self):
+        top5 = self.request.GET.get('top5', None)
+
+        if top5:
+            return self.queryset.all().order_by('-add_time')[:5]
+
+        return self.queryset.all()
 
 
 class ReplayCreateView(generics.CreateAPIView):

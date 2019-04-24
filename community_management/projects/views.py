@@ -1,5 +1,6 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from utils.filter_backends import CustomDjangoFilterBackend
 
 from .models import Project
 from .serializers import ProjectCreateSerializer, ProjectUpdateSerializer, ProjectDetailSerializer
@@ -30,6 +31,17 @@ class ProjectListView(generics.ListAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectDetailSerializer
     permission_classes = (IsAuthenticated,)
+    filter_backends = (CustomDjangoFilterBackend,)
+    filterset_fields = ('name',)
+
+    def get_queryset(self):
+        request = self.request
+        top5 = request.GET.get('top5', None)
+
+        if top5:
+            return self.queryset.all().order_by('-add_time')[:5]
+
+        return self.queryset.all().order_by('-add_time')
 
 
 

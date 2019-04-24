@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Router, Route, Redirect, Switch} from 'react-router-dom';
 import history from 'history/createHashHistory';
+import { useDispatch,StoreContext } from "redux-react-hook";
 
-import Login from './global/Login';
-import Register from './global/Register';
+import Login from './Login';
 import PersonRouter from './person/PersonRouter';
 import CommunityRouter from './community/CommunityRouter';
 import DiscussRouter from './discuss/DiscussRouter';
@@ -16,17 +16,14 @@ import App from '../js/App';
 const hashHistory = history();
 
 class Start extends Component {
-
     render() {
+        
         return (
             <Router history={hashHistory}>
                 <div className="start">
                     <Switch>
                         <Route exact path="/" component={(match) => {
                             return <Login match={match}/>
-                        }} />
-                        <Route exact path="/register" component={(match) => {
-                            return <Register match={match}/>
                         }} />
                         <Route exact path="/app" component={(match) => {
                             return <App match={match}/>

@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    # 'corsheaders',
     'rest_framework',
     'django_filters',
     'DjangoUeditor',    # 富文本
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -58,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    # 'users.middleware.DisableCSRFCheck',
 ]
 
 ROOT_URLCONF = 'community_management.urls'
@@ -140,6 +143,10 @@ STATICFILES_DIRS = [
     os.path.join(REACT_APP_DIR, 'build', 'static'),
 ]
 INDEXHTML = os.path.join(REACT_APP_DIR, 'build', 'index.html')
+
+#跨域增加忽略
+# CORS_ORIGIN_ALLOW_ALL = True
+
 
 # 静态文件配置
 STATIC_URL = '/static/'

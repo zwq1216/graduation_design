@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf.urls import url
 from django.views.static import serve
 from community_management.settings import MEDIA_ROOT
-from users.views import HomeView
+from users.views import HomeView, Captcha
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,6 +43,9 @@ urlpatterns = [
 
     # 讨论相关
     path('api/discuss/', include(('discuss.urls', 'discuss'), namespace='discuss')),
+
+    # 生成验证码
+    path('api/captcha/', Captcha.as_view(), name='captcha'),
 
     # 富文本配置
     path('ueditor/', include('DjangoUeditor.urls')),

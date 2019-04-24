@@ -5,6 +5,7 @@ import {
     AllProject, ApplyProject, PubProject, ManagerProject
 } from './Project';
 import history from '../own/history';
+import ProjectsIndex from './Index';
 
 
 class ProjectRouter extends Component {
@@ -16,6 +17,9 @@ class ProjectRouter extends Component {
                 <div className="community_nav">
                     <Switch>
                         <Route exact path='/project' component={(match) => {
+                            return <ProjectsIndex match={match}/>
+                        }} />
+                        <Route exact path='/project/all' component={(match) => {
                             return <AllProject match={match}/>
                         }} />
                         <Route exact path='/project/apply' component={(match) => {

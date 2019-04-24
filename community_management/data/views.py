@@ -1,5 +1,8 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+from utils.filter_backends import CustomDjangoFilterBackend
+from django.db.models import Q
 
 from .models import DataCategory, Data
 from .serializers import CategorySerializer, DataCreateSerializer, DataUpdateSerializer, DataDetailSerializer
@@ -44,6 +47,22 @@ class DataListView(generics.ListAPIView):
     queryset = Data.objects.all()
     serializer_class = DataDetailSerializer
     permission_classes = (IsAuthenticated,)
+    filter_backends = (CustomDjangoFilterBackend,)
+    filterset_fields = ('status', 'disclosure', 'type__name', 'name')
+
+    def get_queryset(self):
+        top5 = self.request.GET.get('top5', None)
+        user = self.request.user
+        if top5:
+
+            return self.queryset.filter(status=3).order_by('-add_time')[:5]
+
+        if user.role == 3 or user.role == 4:
+            queryset = self.queryset.all()
+        else:
+            queryset = self.queryset.filter(status=3)
+
+        return queryset
 
 
 

@@ -54,6 +54,7 @@ class ProjectUpdateSerializer(serializers.ModelSerializer):
 class ProjectDetailSerializer(serializers.ModelSerializer):
     pub_user = serializers.CharField(source='pub_user.realname', label='发布者')
     apply_user = serializers.SerializerMethodField(label='申请人')
+    add_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label='添加时间')
 
     class Meta:
         model = Project
