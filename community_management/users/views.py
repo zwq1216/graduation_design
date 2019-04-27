@@ -52,16 +52,17 @@ class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request):
-
+        agree = request.scheme
+        host = request.META['HTTP_HOST']
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(data=request.data, context={'request': request})
 
         if serializer.is_valid():
             user = User.objects.get(Q(username=request.data['username']) | Q(sno=request.data['username']))
             login(request, user)
-
+            image = agree + '://' + host + request.user.image.url
             data = {"id": request.user.id, "username": request.user.username,
-                    'role': request.user.role, 'image': request.user.image.url}
+                    'role': request.user.role, 'image': image}
             return Response(data=data, status=status.HTTP_200_OK)
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)

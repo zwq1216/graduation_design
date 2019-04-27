@@ -5,13 +5,13 @@ import history from '../own/history';
 class NewsNav extends Component {
   handleClick = (e) => {
     if(e.key == 2){
-      history.push('/news/pub');
+      history.push('/app/news/pub');
     }
     else if(e.key == 3){
-      history.push('/news/manager');
+      history.push('/app/news/manager');
     }
     else{
-      history.push('/news');
+      history.push('/app/news/all');
     }
     
   }

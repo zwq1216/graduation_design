@@ -6,6 +6,7 @@ import {
 } from './Discuss';
 import history from '../own/history';
 import DiscussIndex from './Index';
+import DiscussDetail from './Detail';
 
 
 class DiscussRouter extends Component {
@@ -16,22 +17,25 @@ class DiscussRouter extends Component {
             <Router history={history}>
                 <div className="community_nav">
                     <Switch>
-                        <Route exact path='/discuss' component={(match) => {
+                        <Route exact path='/app/discuss' component={(match) => {
                             return <DiscussIndex match={match}/>
                         }} />
-                        <Route exact path='/discuss/all' component={(match) => {
+                        <Route path='/app/discuss/all' component={(match) => {
                             return <PublicDiscuss match={match}/>
                         }} />
-                        <Route exact path='/discuss/my' component={(match) => {
+                        <Route path='/app/discuss/detail/:id' component={(match) => {
+                            return <DiscussDetail match={match}/>
+                        }} />
+                        <Route path='/app/discuss/my' component={(match) => {
                             return <MyDiscuss match={match}/>
                         }} />
-                        <Route exact path='/discuss/pub' component={(match) => {
+                        <Route path='/app/discuss/pub' component={(match) => {
                             return <PubDiscuss match={match}/>
                         }} />
-                        <Route exact path='/discuss/community' component={(match) => {
+                        <Route path='/app/discuss/community' component={(match) => {
                             return <CommuntyDiscuss match={match}/>
                         }} />
-                        <Route exact path='/discuss/manager' component={(match) => {
+                        <Route path='/app/discuss/manager' component={(match) => {
                             return <ManagerDiscuss match={match}/>
                         }} />
                     </Switch>

@@ -6,7 +6,18 @@
     background: royalblue;
 }
 
+.com-div2-style {
+    width: 200px;
+    height: 200px;
+    float: left;
+    margin-left: 20px;
+    margin-top: 20px;
+    background: royalblue;
+}
 .com-div1-style:hover{
+    cursor: pointer;
+}
+.com-div2-style:hover{
     cursor: pointer;
 }
 

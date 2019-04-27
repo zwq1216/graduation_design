@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
 import { Layout, Input, Button} from 'antd';
+import {CommunityCardB} from '../global/Card';
 import Nav from '../home/Nav';
-import Wheel from '../home/Wheel';
 import Bottom from '../home/Buttom';
 import Fetch from '../own/Fetch';
 
@@ -10,36 +10,34 @@ const Search = Input.Search;
 
 
 
-class DataIndex extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-          models: []
-        }
-      }
-      componentDidMount(){
-        Fetch.get('/api/data/')
-        .then((data) => {
-            this.setState({
-              models: data
-            })
-        }).catch(err=>{
-          console.log(err)
-        })
-      }
+class CommunityIndex extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      models: []
+    }
+  }
   
-    render(){
-            
-    const model = this.state.models;
+  componentDidMount(){
+    Fetch.get('/api/community/')
+    .then((data) => {
+        this.setState({
+          models: data
+        })
+    }).catch(err=>{
+      console.log(err)
+    })
+  }
+  
+  render(){
+      const model = this.state.models;
     return (
       <Layout className="App">
         <Nav/>
-        <Wheel/>
         <div>
         <div style={{width:300, marginTop:10, marginLeft:20, float: "left"}}>
         <Search
           placeholder="社团名称"
-          // onSearch={value => console.log(value)}
           onSearch={value => {
             Fetch.get('/api/data/?name='+value)
             .then((data) => {
@@ -54,16 +52,18 @@ class DataIndex extends Component {
         />
         </div>
         <div style={{marginTop:10, marginRight:10, float:"right"}}>
-          <Button type="primary" href='#/data/all/'>我的资料</Button>
+          <Button type="primary" href='#/app/data/all/'>我的社团</Button>
         </div>
         </div>
-        <div className='body'>
+        <div>
                 {
                     model.map(function(val, index, array){
-                        return <CommunityCard
-                        key={"key" + index}
+                        return <CommunityCardB
+                        key={val.id}
+                        id={val.id}
                         data={val.name}
                         img={val.image}
+                        score={val.score}
                         />
                     })
                 }
@@ -75,4 +75,4 @@ class DataIndex extends Component {
 }
 
 
-export default DataIndex;
+export default CommunityIndex;

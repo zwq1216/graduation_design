@@ -4,7 +4,7 @@ import {Layout} from 'antd';
 import NewsNav from './NewsNav';
 import Nav from '../home/Nav';
 import {
-    Info,
+    All, Manage, Pub
 } from './ManagerNews';
 import '../../css/person/person.css';
 
@@ -34,7 +34,7 @@ class AllNews extends Component {
 
     render(){
         return(
-            <PersonContent app={<Info/>}/>
+            <PersonContent app={<All/>}/>
         )
     }
 }
@@ -44,17 +44,17 @@ class PubNews extends Component {
 
     render(){
         return(
-            <PersonContent />
+            <PersonContent app={<Pub/>}/>
         )
     }
 }
 
-// 资料管理
+// 新闻活动管理
 class ManagerNews extends Component {
 
     render(){
         return(
-            <PersonContent />
+            <PersonContent app={<Manage/>}/>
         )
     }
 }

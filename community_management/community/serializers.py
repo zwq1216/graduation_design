@@ -70,6 +70,7 @@ class CommunityFileSerializer(serializers.ModelSerializer):
 
 
 class HonorSerializer(serializers.ModelSerializer):
+    date = serializers.DateTimeField(format="%Y-%m-%d", label='添加时间')
 
     class Meta:
         model = Honor

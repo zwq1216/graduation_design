@@ -32,11 +32,11 @@ class Nav extends Component {
         super(props);
         this.state = {
             "models": [
-                {id: 6, name: "下载中心", router: '/data'},
-                {id: 5, name: "新闻活动", router: '/news'},
-                {id: 4, name: "讨论区", router: '/discuss'},
-                {id: 3, name: "项目", router: '/project'},
-                {id: 2, name: "社团", router: '/community'},
+                {id: 6, name: "下载中心", router: '/app/data'},
+                {id: 5, name: "新闻活动", router: '/app/news'},
+                {id: 4, name: "讨论区", router: '/app/discuss'},
+                {id: 3, name: "项目", router: '/app/project'},
+                {id: 2, name: "社团", router: '/app/community'},
                 {id: 1, name: "主页", router: '/app'},
             ]
         }

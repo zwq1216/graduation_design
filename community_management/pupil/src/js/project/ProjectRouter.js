@@ -16,19 +16,19 @@ class ProjectRouter extends Component {
             <Router history={history}>
                 <div className="community_nav">
                     <Switch>
-                        <Route exact path='/project' component={(match) => {
+                        <Route exact path='/app/project' component={(match) => {
                             return <ProjectsIndex match={match}/>
                         }} />
-                        <Route exact path='/project/all' component={(match) => {
+                        <Route exact path='/app/project/all' component={(match) => {
                             return <AllProject match={match}/>
                         }} />
-                        <Route exact path='/project/apply' component={(match) => {
+                        <Route exact path='/app/project/apply' component={(match) => {
                             return <ApplyProject match={match}/>
                         }} />
-                         <Route exact path='/project/pub' component={(match) => {
+                         <Route exact path='/app/project/pub' component={(match) => {
                             return <PubProject match={match}/>
                         }} />
-                        <Route exact path='/project/manager' component={(match) => {
+                        <Route exact path='/app/project/manager' component={(match) => {
                             return <ManagerProject match={match}/>
                         }} />
                     </Switch>

@@ -5,19 +5,19 @@ import history from '../own/history';
 class DiscussNav extends Component {
   handleClick = (e) => {
     if(e.key == 2){
-      history.push('/discuss/my');
+      history.push('/app/discuss/my');
     }
     else if(e.key == 3){
-      history.push('/discuss/pub');
+      history.push('/app/discuss/pub');
     }
-    else if(e.key == 4){
-      history.push('/discuss/community');
-    }
+    // else if(e.key == 4){
+    //   history.push('/app/discuss/community');
+    // }
     else if(e.key == 5){
-      history.push('/discuss/manager');
+      history.push('/app/discuss/manager');
     }
     else{
-      history.push('/discuss');
+      history.push('/app/discuss/all');
     }
     
   }
@@ -35,7 +35,7 @@ class DiscussNav extends Component {
           <Divider style={{marginBottom:0, marginTop: 0}}/>
           <Menu.Item key="2"><Icon type="book" />我的参与</Menu.Item>
           <Menu.Item key="3"><Icon type="calendar" />发布讨论主题</Menu.Item>
-          <Menu.Item key="4"><Icon type="calendar" />社团讨论主题</Menu.Item>
+          {/* <Menu.Item key="4"><Icon type="calendar" />社团讨论主题</Menu.Item> */}
           <Menu.Item key="5"><Icon type="qrcode" />讨论主题管理</Menu.Item>
         </Menu>
       </div>

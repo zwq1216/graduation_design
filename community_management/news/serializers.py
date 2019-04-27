@@ -12,20 +12,20 @@ class NewsImagesSerializer(serializers.ModelSerializer):
 class NewsCreateSerializer(serializers.ModelSerializer):
     name = serializers.CharField(required=True, max_length=50, label='名称')
     desc = serializers.CharField(required=True, max_length=1000, label='描述')
-    # images = serializers.ListField(
-    #     child=serializers.FileField(max_length=100000, allow_empty_file=True, allow_null=True, use_url=True),
-    # )
-    images = serializers.FileField(allow_null=True, allow_empty_file=True, label='活动图片')
+    images = serializers.ListField(
+        child=serializers.FileField(max_length=100000, allow_empty_file=True, allow_null=True, use_url=True),
+    )
+    # images = serializers.FileField(allow_null=True, allow_empty_file=True, label='活动图片')
 
     class Meta:
         model = News
         fields = ('id', 'name', 'desc', 'images')
 
     def validate(self, attrs):
-        role = user = self.context['request'].user.role
+        role = self.context['request'].user.role
 
-        if role == 0 or role == 1:
-            raise serializers.ValidationError({'error': '普通用户或普通社团成员无法创建新闻活动'})
+        if role == 0 or role == 1 or role == 2:
+            raise serializers.ValidationError({'error': '只有超级管理员或监督人员可以创建新闻活动'})
 
         return attrs
 
@@ -39,24 +39,24 @@ class NewsCreateSerializer(serializers.ModelSerializer):
 
         return instance
 
-    # def to_representation(self, instance):
-    #     ret = OrderedDict()
-    #     fields = self._readable_fields
-    #
-    #     for field in fields:
-    #         try:
-    #             attribute = field.get_attribute(instance)
-    #         except Exception as e:
-    #             del e
-    #             continue
-    #
-    #         check_for_none = attribute.pk if isinstance(attribute, PKOnlyObject) else attribute
-    #         if check_for_none is None:
-    #             ret[field.field_name] = None
-    #         else:
-    #             ret[field.field_name] = field.to_representation(attribute)
-    #
-    #     return ret
+    def to_representation(self, instance):
+        ret = OrderedDict()
+        fields = self._readable_fields
+
+        for field in fields:
+            try:
+                attribute = field.get_attribute(instance)
+            except Exception as e:
+                del e
+                continue
+
+            check_for_none = attribute.pk if isinstance(attribute, PKOnlyObject) else attribute
+            if check_for_none is None:
+                ret[field.field_name] = None
+            else:
+                ret[field.field_name] = field.to_representation(attribute)
+
+        return ret
 
 
 class NewsUpdateSerializer(serializers.ModelSerializer):

@@ -10,7 +10,7 @@ import history from '../own/history';
 
 const onClick = ({ key }) => {
   if(key == 1){
-    history.push('/person');
+    history.push('/app/person');
   }
   else if(key == 2){
     history.push('/changepassword');
@@ -33,7 +33,7 @@ class UserMenu extends Component {
   render(){
     return(
       <Dropdown overlay={menu}>
-        <Link className="ant-dropdown-link" to="/person">
+        <Link className="ant-dropdown-link" to="/app/person">
         <img src={user} className='user'/>
         </Link>
     </Dropdown>

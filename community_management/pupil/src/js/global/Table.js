@@ -6,7 +6,7 @@ import '../../css/global/table.css';
 class IndexTable extends Component {
     render(){
         return (
-            <Table columns={this.props.columns} dataSource={this.props.data} pagination={false} />
+            <Table columns={this.props.columns} dataSource={this.props.data} pagination={true} />
         )
     }
 }

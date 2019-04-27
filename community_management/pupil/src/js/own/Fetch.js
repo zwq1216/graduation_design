@@ -60,6 +60,12 @@ const interceptor = new Interceptor({
                     'X-CSRFToken': getCookie('csrftoken')
                 }
             }
+            if (config.method === "DELETE") {
+                config.headers = {
+                    
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            }
             return Promise.resolve([url, config])
         },
         success(data) {

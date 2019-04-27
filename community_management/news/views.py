@@ -20,18 +20,25 @@ class NewsUpdateView(generics.UpdateAPIView):
 
 
 class NewsRetrieveView(generics.RetrieveAPIView):
-    """新闻活动详情、删除新闻活动"""
+    """新闻活动详情"""
     queryset = News.objects.all()
     serializer_class = NewsRetrieveSerializer
     permission_classes = (IsAuthenticated,)
 
     def retrieve(self, request, *args, **kwargs):
         obj = self.get_object()
-        count = obj.count + 0.5
+        count = obj.count + 1
         obj.count = count
         obj.save()
 
         return super().retrieve(request, *args, **kwargs)
+
+
+class NewsDestroyView(generics.DestroyAPIView):
+    """删除新闻活动"""
+    queryset = News.objects.all()
+    serializer_class = NewsRetrieveSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class NewsListView(generics.ListAPIView):

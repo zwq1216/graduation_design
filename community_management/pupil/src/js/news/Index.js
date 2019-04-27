@@ -64,7 +64,6 @@ class NewsIndex extends Component {
         <div style={{width:300, marginTop:10, marginLeft:20, float: "left"}}>
         <Search
           placeholder="输入关键字"
-          // onSearch={value => console.log(value)}
           onSearch={value => {
             Fetch.get('/api/news/?name='+value)
             .then((data) => {
@@ -79,11 +78,11 @@ class NewsIndex extends Component {
         />
         </div>
         <div style={{marginTop:10, marginRight:10, float:"right"}}>
-          <Button type="primary" href='#/news/all/'>我的新闻管理中心</Button>
+          <Button type="primary" href='#/app/news/all/'>我的新闻管理中心</Button>
         </div>
         </div>
         <div>
-        <IndexTable rowKey='id' columns={columns} data={data} herf='/news/detail/'/>
+         <IndexTable rowKey='id' columns={columns} data={data} herf='/app/news/detail/'/>
         </div>
 
         <Bottom/>

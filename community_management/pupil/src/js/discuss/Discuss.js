@@ -4,7 +4,7 @@ import {Layout} from 'antd';
 import DiscussNav from './DiscussNav';
 import Nav from '../home/Nav';
 import {
-    Info,
+    All, My, Manage, Pub
 } from './ManagerDiscuss';
 import '../../css/person/person.css';
 
@@ -34,7 +34,7 @@ class PublicDiscuss extends Component {
 
     render(){
         return(
-            <PersonContent app={<Info/>}/>
+            <PersonContent app={<All/>}/>
         )
     }
 }
@@ -44,7 +44,7 @@ class MyDiscuss extends Component {
 
     render(){
         return(
-            <PersonContent />
+            <PersonContent app={<My/>}/>
         )
     }
 }
@@ -54,7 +54,7 @@ class PubDiscuss extends Component {
 
     render(){
         return(
-            <PersonContent />
+        <PersonContent app={<Pub/>}/>
         )
     }
 }
@@ -74,7 +74,7 @@ class ManagerDiscuss extends Component {
 
     render(){
         return(
-            <PersonContent />
+            <PersonContent app={<Manage/>}/>
         )
     }
 }

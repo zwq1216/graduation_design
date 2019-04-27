@@ -20,7 +20,7 @@ class NormalRegisterForm extends React.Component {
     
     this.props.form.validateFields((err, values) => {
       if (!err) {
-            let objs = {
+          let objs = {
               sno: values.sno,
               username: values.username,
               password: values.registerPassword

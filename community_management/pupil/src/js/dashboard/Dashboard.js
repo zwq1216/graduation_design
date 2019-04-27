@@ -3,9 +3,11 @@ import { Row, Col, Card, Icon, Avatar, Divider } from 'antd';
 import EchartsProjects from './EchartsProjects';
 
 
-
 class Dashboard extends React.Component {
+    
     render() {
+        const data = this.props.data;
+        console.log(data)
         return (
             <div className="gutter-example button-demo">
                 <Row gutter={10}>
@@ -13,13 +15,13 @@ class Dashboard extends React.Component {
                         <div className="gutter-box">
                             <Card bordered={true}>
                                 <div style={{marginLeft: 80}}>
-                                    <Avatar shape="square" size={150} icon="user" />
+                                    <Avatar shape="square" size={150} src={data.image} />
                                 </div>
                             </Card>
                             <div className="gutter-box">
                                 <Card bordered={true} bodyStyle={{marginTop:0}}>
-                                    <h2 style={{textAlign: 'center'}}>开拓者社团</h2>
-                                    <div style={{textAlign: 'center'}}>社团宗旨</div>
+                                    <h2 style={{textAlign: 'center'}}>{data.name}</h2>
+                                    <div style={{textAlign: 'center'}}>{data.objective}</div>
                                 </Card>
                             </div>
                         </div>
@@ -38,9 +40,7 @@ class Dashboard extends React.Component {
                             <Card bordered={false}>
                                 <h3>社团简介</h3>
                                 <div className="pb-m">
-                                首先介绍成立时间，再介绍成立社团的原因，然后介绍社团的宗旨或目标和社团能为别人
-                                做些什么（例如：羽毛球社能为广大师生提供一个交流经验与技术的平台和空间……），
-                                最后介绍未来社团的发展方向. 
+                                {data.desc}
                                 </div>
                                 
                                 
@@ -48,24 +48,29 @@ class Dashboard extends React.Component {
                             <Card bordered={false}>
                                 <h3>社团导师简历</h3>
                                 <div className="pb-m">
-                                    <a href='#'>下载导师简历</a>
+                                    {/* <a href={data.files.teacher_file}>下载导师简历</a> */}
                                 </div>
                             </Card>
                             <Card bordered={false}>
                                 <h3>社团简章</h3>
                                 <div className="pb-m">
-                                <a href='#'>下载社团简章</a>
+                                {/* <a href={data.files.community_file}>下载社团简章</a> */}
                                 </div>
                             </Card>
                             <Card bordered={false}>
                                 <h3>社团规章制度</h3>
                                 <div className="pb-m">
-                                <a href='#'>下载规章制度</a>
+                                {/* <a href={data.files.community_file_rule}>下载规章制度</a> */}
                                 </div>
                             </Card>
                             <Card bordered={false}>
                                 <h3>社团荣誉</h3>
                                 <div className="pb-m">
+                                    {/* {
+                                        data.honor.map(function(val, index, array){
+                                            return <p>{val.date} {val.name}</p>
+                                        })
+                                    } */}
                                     <p>2019.09.01 荣获校竞赛三等奖</p>
                                     <p>2019.09.01 荣获校竞赛三等奖</p>
                                     <p>2019.09.01 荣获校竞赛三等奖</p>

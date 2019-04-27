@@ -38,7 +38,7 @@ class CommunityListView(generics.ListAPIView):
         if top5:
             return self.queryset.all().order_by('-score')[:5]
 
-        return self.queryset.all().order_by
+        return self.queryset.all().order_by('-score')
 
 # class ScoreListCreateView(generics.ListCreateAPIView):
 #     """社团积分创建、社团积分列表"""

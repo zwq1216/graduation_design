@@ -1,13 +1,21 @@
 from rest_framework import serializers
 
-from .models import DiscussTheme, ReplayTheme
+from .models import DiscussTheme, ReplayTheme, DiscussCatagroy
+from users.models import User
+
+
+class CatagorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DiscussCatagroy
+        fields = ('id', 'name')
 
 
 class DiscussCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DiscussTheme
-        fields = ('id', 'title', 'content')
+        fields = ('id', 'title', 'catagory', 'content')
 
     def create(self, validated_data):
         user = self.context['request'].user
@@ -16,8 +24,15 @@ class DiscussCreateSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+class UserDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'image')
+
+
 class DiscussDetailSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(source='user.username', label='用户姓名')
+    user = UserDetailSerializer()
     catagory = serializers.CharField(source='catagory.name', label='所属分类')
     add_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label='添加时间')
 
@@ -30,7 +45,7 @@ class ReplayCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReplayTheme
-        fields = ('id', 'title', 'content', 'theme')
+        fields = ('id', 'content', 'theme')
 
     def create(self, validated_data):
         user = self.context['request'].user
@@ -41,11 +56,15 @@ class ReplayCreateSerializer(serializers.ModelSerializer):
 
 class ReplayDetailSerializer(serializers.ModelSerializer):
     theme = serializers.CharField(source='theme.title')
-    user = serializers.CharField(source='user.username')
+    user = UserDetailSerializer()
+    add_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label='添加时间')
 
     class Meta:
         model = ReplayTheme
-        fields = ('id', 'title', 'content', 'theme', 'user', 'add_time')
+        fields = ('id', 'content', 'theme', 'user', 'add_time')
+
+
+
 
 
 

@@ -8,25 +8,25 @@ import logo from '../../test/images/2.png';
 class PersonNav extends Component {
   handleClick = (e) => {
     if(e.key == 1){
-      history.push('/person/message');
+      history.push('/app/person/message');
     }
     else if(e.key == 2){
-      history.push('/person/audit');
+      history.push('/app/person/audit');
     }
     else if(e.key == 3){
-      history.push('/person/edit');
+      history.push('/app/person/edit');
     }
     else if(e.key == 4){
-      history.push('/person/join_club');
+      history.push('/app/person/join_club');
     }
     else if(e.key == 5){
-      history.push('/person/quit_club');
+      history.push('/app/person/quit_club');
     }
     else if(e.key == 6){
-      history.push('/person/manage');
+      history.push('/app/person/manage');
     }
     else{
-      history.push('/person');
+      history.push('/app/person');
     }
     
   }

@@ -16,7 +16,7 @@ class NewsDetail extends Component {
       }
       componentDidMount(){
         const id = this.props.match.match.params.id;
-        Fetch.get('/api/news/detail/'+id)
+        Fetch.get(`/api/news/detail/${id}/`)
         .then((data) => {
             this.setState({
               data: data

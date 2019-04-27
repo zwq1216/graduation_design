@@ -6,6 +6,7 @@ import {
 } from './Community';
 import history from '../own/history';
 import CommunityDetail from './Detail';
+import CommunityIndex from './Index'
 
 
 class CommunityRouter extends Component {
@@ -16,22 +17,25 @@ class CommunityRouter extends Component {
             <Router history={history}>
                 <div className="community_nav">
                     <Switch>
-                        <Route exact path='/community' component={(match) => {
-                            return <CommunityDetail match={match}/>
+                        <Route exact path='/app/community' component={(match) => {
+                            return <CommunityIndex match={match}/>
                         }} />
-                        <Route exact path='/community/all' component={(match) => {
+                        <Route exact path='/app/community/all' component={(match) => {
                             return <AllCommunty match={match}/>
                         }} />
-                        <Route exact path='/community/apply' component={(match) => {
+                        <Route exact path='/app/community/detail/:id' component={(match) => {
+                            return <CommunityDetail match={match}/>
+                        }} />
+                        <Route exact path='/app/community/apply' component={(match) => {
                             return <ApplyCommunty match={match}/>
                         }} />
-                        <Route exact path='/community/manage' component={(match) => {
+                        <Route exact path='/app/community/manage' component={(match) => {
                             return <ManageCommunty match={match}/>
                         }} />
-                        <Route exact path='/community/monit' component={(match) => {
+                        <Route exact path='/app/community/monit' component={(match) => {
                             return <MonitCommunty match={match}/>
                         }} />
-                        <Route exact path='/community/pushmessage' component={(match) => {
+                        <Route exact path='/app/community/pushmessage' component={(match) => {
                             return <PushMessage match={match}/>
                         }} />
                     </Switch>

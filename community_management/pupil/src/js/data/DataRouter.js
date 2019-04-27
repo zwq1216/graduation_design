@@ -16,16 +16,16 @@ class DiscussRouter extends Component {
             <Router history={history}>
                 <div className="community_nav">
                     <Switch>
-                        <Route exact path='/data' component={(match) => {
+                        <Route exact path='/app/data' component={(match) => {
                             return <DataIndex match={match}/>
                         }} />
-                        <Route exact path='/data/all' component={(match) => {
+                        <Route exact path='/app/data/all' component={(match) => {
                             return <AllData match={match}/>
                         }} />
-                        <Route exact path='/data/share' component={(match) => {
+                        <Route exact path='/app/data/share' component={(match) => {
                             return <ShareData match={match}/>
                         }} />
-                        <Route exact path='/data/manager' component={(match) => {
+                        <Route exact path='/app/data/manager' component={(match) => {
                             return <ManagerData match={match}/>
                         }} />
                     </Switch>

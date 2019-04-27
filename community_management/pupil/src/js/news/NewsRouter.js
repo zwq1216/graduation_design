@@ -17,23 +17,22 @@ class NewsRouter extends Component {
             <Router history={history}>
                 <div className="community_nav">
                     <Switch>
-                        <Route exact path='/news' component={(match) => {
+                        <Route exact path='/app/news' component={(match) => {
                             return <NewsIndex match={match}/>
                         }} />
-                        <Route exact path='/news/all' component={(match) => {
+                        <Route path='/app/news/all' component={(match) => {
                             return <AllNews match={match}/>
                         }} />
-                        <Route exact path='/news/detail/:id' component={(match) => {
+                        <Route path='/app/news/detail/:id' component={(match) => {
                             return <NewsDetail match={match}/>
                         }} />
-                        <Route exact path='/news/pub' component={(match) => {
+                        <Route path='/app/news/pub' component={(match) => {
                             return <PubNews match={match}/>
                         }} />
-                        <Route exact path='/news/manager' component={(match) => {
+                        <Route path='/app/news/manager' component={(match) => {
                             return <ManagerNews match={match}/>
                         }} />
                     </Switch>
-                    {/* <Disappear/> */}
                 </div>
             </Router>
             </React.Fragment>

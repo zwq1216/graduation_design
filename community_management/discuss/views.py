@@ -2,9 +2,16 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from utils.filter_backends import CustomDjangoFilterBackend
 
-from .models import DiscussTheme, ReplayTheme
+from .models import DiscussTheme, ReplayTheme, DiscussCatagroy
 from .serializers import DiscussCreateSerializer, DiscussDetailSerializer, ReplayCreateSerializer, \
-    ReplayDetailSerializer
+    ReplayDetailSerializer, CatagorySerializer
+
+
+class DiscussCatagroyView(generics.ListAPIView):
+    """帖子分类列表"""
+    queryset = DiscussCatagroy.objects.all()
+    serializer_class = CatagorySerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class DiscussCreateView(generics.CreateAPIView):
@@ -55,7 +62,29 @@ class ReplayListView(generics.ListAPIView):
     queryset = ReplayTheme.objects.all()
     serializer_class = ReplayDetailSerializer
     permission_classes = (IsAuthenticated,)
+    filter_backends = (CustomDjangoFilterBackend,)
+    filterset_fields = ('theme',)
 
+
+class MyDiscussListView(generics.ListAPIView):
+    """我发布的主贴列表"""
+    queryset = DiscussTheme.objects.all()
+    serializer_class = DiscussDetailSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        comment = self.request.GET.get('comment', None)
+        user = self.request.user
+        queryset = self.queryset.filter(user=user)
+
+        if comment:
+            replay = ReplayTheme.objects.filter(user=user)
+            theme = [rep.user for rep in replay]
+            queryset1 = self.queryset.filter(user__in=theme)
+            queryset = queryset | queryset1
+            return queryset.order_by('-add_time')
+
+        return queryset.order_by('-add_time')
 
 
 

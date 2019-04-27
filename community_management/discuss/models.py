@@ -31,8 +31,6 @@ class DiscussTheme(models.Model):
 
 class ReplayTheme(models.Model):
     """回帖"""
-
-    title = models.CharField(max_length=100, verbose_name='标题')
     content = UEditorField(width=600, height=300, toolbars="full", imagePath="discuss/images/",
                            filePath="discuss/files/", upload_settings={"imageMaxSize": 1204000},
                            settings={}, verbose_name='内容')

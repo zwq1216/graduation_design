@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Router, Route, Redirect, Switch} from 'react-router-dom';
-import history from 'history/createHashHistory';
-import { useDispatch,StoreContext } from "redux-react-hook";
+import history from './own/history';
 
 import Login from './Login';
 import PersonRouter from './person/PersonRouter';
@@ -13,22 +12,21 @@ import ProjectRouter from './project/ProjectRouter';
 import Changepassword from './global/Changepassword';
 import App from '../js/App';
 
-const hashHistory = history();
 
 class Start extends Component {
     render() {
         
         return (
-            <Router history={hashHistory}>
+            <Router history={history}>
                 <div className="start">
                     <Switch>
                         <Route exact path="/" component={(match) => {
                             return <Login match={match}/>
                         }} />
-                        <Route exact path="/app" component={(match) => {
+                        <Route path="/app" component={(match) => {
                             return <App match={match}/>
                         }} />
-                        <Route path="/person" component={(match) => {
+                        {/* <Route path="/person" component={(match) => {
                             return <PersonRouter match={match}/>
                         }} />
                         <Route path="/community" component={(match) => {
@@ -42,18 +40,17 @@ class Start extends Component {
                         }} />
                         <Route path="/news" component={(match) => {
                             return <NewsRouter match={match}/>
-                        }} />
+                        }} /> 
                         <Route path="/project" component={(match) => {
                             return <ProjectRouter match={match}/>
-                        }} />
-                        <Route exact path="/changepassword" component={(match) => {
+                        }} /> */}
+                        <Route path="/changepassword" component={(match) => {
                             return <Changepassword match={match}/>
                         }} />
 
                         {/* <Route path='/404' component={NotFoundPage} />
-                        <Redirect from='*' to='/404' /> */}
+                        <Redirect from='*' to='/404' />  */}
                     </Switch>
-                    {/* <Disappear/> */}
                 </div>
             </Router>
         );

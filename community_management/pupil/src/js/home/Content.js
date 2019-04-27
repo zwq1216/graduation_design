@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 import {Layout} from 'antd';
 import {Link} from 'react-router-dom';
 import Fetch from '../own/Fetch';
-import CommunityCard from '../global/Card';
+import {CommunityCardA} from '../global/Card';
 import IndexTable from '../global/Table';
+import {HTable, NTable} from '../global/NHTable';
 import '../../css/home/content.css';
-import image1 from '../../test/images/1.png';
 
 const {Content} = Layout;
 
@@ -65,8 +65,9 @@ class CommunityBody extends Component {
             <div className='body'>
                 {
                     model.map(function(val, index, array){
-                        return <CommunityCard
+                        return <CommunityCardA
                         key={val.id}
+                        id={val.id}
                         data={val.name}
                         img={val.image}
                         score={val.score}
@@ -84,7 +85,7 @@ class Community extends Component {
             <Layout className='con'>
                 <Title title='社团TOP5'/>
                 <CommunityBody/>
-                <Bottom content='更多社团'/>
+                <Bottom content='更多社团' href='/app/community'/>
                 <End/>
             </Layout>
         )
@@ -138,8 +139,8 @@ class Project extends Component {
         return(
             <Layout className='pro'>
                 <Title title='最新项目'/>
-                <IndexTable rowKey='id' columns={columns} data={data}/>
-                <Bottom content='更多项目' href='/project'/>
+                <NTable rowKey='id' columns={columns} data={data}/>
+                <Bottom content='更多项目' href='/app/project'/>
                 <End/>
             </Layout>
         )
@@ -196,8 +197,8 @@ class Data extends Component {
         return(
             <Layout className='data'>
                 <Title title='最新资料'/>
-                <IndexTable rowKey='id' columns={columns} data={data}/>
-                <Bottom content='更多资料' href='/data'/>
+                <NTable rowKey='id' columns={columns} data={data}/>
+                <Bottom content='更多资料' href='/app/data'/>
                 <End/>
             </Layout>
         )
@@ -214,7 +215,6 @@ class Discuss extends Component {
   componentDidMount(){
     Fetch.get('/api/discuss/?top5=1')
     .then((data) => {
-      console.log(data);
         this.setState({
           data: data
         })
@@ -234,7 +234,7 @@ class Discuss extends Component {
             width: 100,
           }, {
             title: '发布者',
-            dataIndex: 'user',
+            dataIndex: 'user.username',
             width: 70,
           },
           {
@@ -247,8 +247,8 @@ class Discuss extends Component {
         return(
             <Layout className='discuss'>
                 <Title title='最新讨论'/>
-                <IndexTable rowKey='id' columns={columns} data={data}/>
-                <Bottom content='更多讨论' href='/discuss'/>
+                <HTable rowKey='id' columns={columns} data={data} herf='/app/discuss/detail/'/>
+                <Bottom content='更多讨论' href='/app/discuss'/>
                 <End/>
             </Layout>
         )
@@ -304,8 +304,8 @@ class News extends Component {
         return(
             <Layout className='news'>
                 <Title title='最新新闻活动'/>
-                <IndexTable rowKey='id' columns={columns} data={data}/>
-                <Bottom content='更多新闻活动' href='/news'/>
+                <HTable rowKey='id' columns={columns} data={data}/>
+                <Bottom content='更多新闻活动' href='/app/news'/>
                 <End/>
             </Layout>
         )

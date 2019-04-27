@@ -41,7 +41,7 @@ class DiscussIndex extends Component {
             width: 100,
           }, {
             title: '发布者',
-            dataIndex: 'user',
+            dataIndex: 'user.username',
             width: 70,
           },
           {
@@ -50,7 +50,7 @@ class DiscussIndex extends Component {
             width: 70,
           }];
           
-          const data = this.state.data;
+    const data = this.state.data;
     return (
       <Layout className="App">
         <Nav/>
@@ -75,11 +75,11 @@ class DiscussIndex extends Component {
         />
         </div>
         <div style={{marginTop:10, marginRight:10, float:"right"}}>
-          <Button type="primary" href='#/discuss/all/'>我的帖子</Button>
+          <Button type="primary" href='#/app/discuss/all/'>我的帖子</Button>
         </div>
         </div>
         <div>
-        <IndexTable rowKey='id' columns={columns} data={data}/>
+        <IndexTable rowKey='id' columns={columns} data={data} herf='/app/discuss/detail/'/>
         </div>
 
         <Bottom/>
