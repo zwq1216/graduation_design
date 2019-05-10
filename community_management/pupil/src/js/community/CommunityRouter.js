@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Router, Route, Switch} from 'react-router-dom';
 
 import {
-    AllCommunty, ApplyCommunty, ManageCommunty, MonitCommunty, PushMessage
+    AllCommunty, ApplyCommunty, ManageCommunty, MonitCommunty, PushMessage, EditCommunty
 } from './Community';
 import history from '../own/history';
 import CommunityDetail from './Detail';
@@ -31,6 +31,9 @@ class CommunityRouter extends Component {
                         }} />
                         <Route exact path='/app/community/manage' component={(match) => {
                             return <ManageCommunty match={match}/>
+                        }} />
+                        <Route exact path='/app/community/edit/:id' component={(match) => {
+                            return <EditCommunty match={match}/>
                         }} />
                         <Route exact path='/app/community/monit' component={(match) => {
                             return <MonitCommunty match={match}/>

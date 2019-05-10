@@ -5,6 +5,10 @@ import {
     MessageList, JoinClubForm, QuitClubForm, ManageUserCard, EditUser
 } from './PersonList';
 import '../../css/person/person.css';
+import Local from '../own/Local';
+import Fetch from '../own/Fetch';
+
+const userid = Local.get('userid');
 
 const TabPane = Tabs.TabPane;
 
@@ -13,19 +17,19 @@ class Info extends Component {
     constructor(props){
         super(props);
         this.state = {
-            "model": {
-                nick: '小强',
-                name: '真实姓名',
-                sno: '1515925688',
-                grade: '班级',
-                college: '学院',
-                role: '角色',
-                phone: '手机号',
-                status: '用户状态',
-                add_time: '注册时间',
-            }
+            "model": {}
         };
     }
+    componentDidMount(){
+        Fetch.get(`/api/users/ret_del/${userid}/`)
+        .then((data) => {
+            this.setState({
+              model: data
+            })
+        }).catch(err=>{
+          console.log(err)
+        })
+      }
     render(){
         const model = this.state.model;
         return(
@@ -35,15 +39,17 @@ class Info extends Component {
                 </div>
                 <Divider style={{ marginTop:0, marginBottom:0}}/>
                 <div className='con-content'>
-                    <div className='con-content-c'>昵称：{model.nick}</div>
-                    <div className='con-content-c'>真实姓名：{model.name}</div>
-                    <div className='con-content-c'>学号/工号：{model.sno}</div>
-                    <div className='con-content-c'>班级：{model.grade}</div>
-                    <div className='con-content-c'>学院：{model.college}</div>
-                    <div className='con-content-c'>角色：{model.role}</div>
-                    <div className='con-content-c'>手机号：{model.phone}</div>
-                    <div className='con-content-c'>用户状态：{model.status}</div>
-                    <div className='con-content-c'>注册时间：{model.add_time}</div>
+                    <div style={{height:550}}>
+                        <div className='con-content-c'>昵称：{model.username}</div>
+                        <div className='con-content-c'>真实姓名：{model.realname}</div>
+                        <div className='con-content-c'>学号/工号：{model.sno}</div>
+                        <div className='con-content-c'>班级：{model.grade}</div>
+                        <div className='con-content-c'>学院：{model.college}</div>
+                        <div className='con-content-c'>角色：{model.role}</div>
+                        <div className='con-content-c'>手机号：{model.phone}</div>
+                        {/* <div className='con-content-c'>用户状态：{model.status}</div> */}
+                        <div className='con-content-c'>注册时间：{model.date_joined}</div>
+                    </div>
                 </div>
             </div>
         )
@@ -213,14 +219,6 @@ class UserInfo extends Component{
 
 class Edit extends Component {
     render(){
-        const model = {
-            sno: '学号',
-            grade: '班级',
-            password: '密码',
-            status: '用户状态',
-            role: '角色',
-            phone: '手机号',
-        }
         return(
             <div className='con'>
                 <div className='con-top'>
@@ -228,8 +226,8 @@ class Edit extends Component {
                 </div>
                 <Divider style={{ marginTop:0, marginBottom:0}}/>
                 <div className='con-content'>
-                    <div style={{width: 300, marginLeft: 10}}> 
-                        <EditUser obj={model}/>
+                    <div style={{width: 300, marginLeft: 10, height:550}}> 
+                        <EditUser/>
                     </div>
                 </div>
             </div>

@@ -5,16 +5,16 @@ import history from '../own/history';
 class ProjectNav extends Component {
   handleClick = (e) => {
     if(e.key == 2){
-      history.push('/project/apply');
+      history.push('/app/project/apply');
     }
     else if(e.key == 3){
-      history.push('/project/pub');
+      history.push('/app/project/pub');
     }
     else if(e.key == 4){
-      history.push('/project/manager');
+      history.push('/app/project/manager');
     }
     else{
-      history.push('/project');
+      history.push('/app/project/all');
     }
     
   }

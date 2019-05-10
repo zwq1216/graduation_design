@@ -10,7 +10,6 @@ import Fetch from '../own/Fetch';
 const Search = Input.Search;
 
 
-
 class ProjectsIndex extends Component {
     constructor(props){
         super(props);
@@ -89,7 +88,7 @@ class ProjectsIndex extends Component {
                 />
                 </div>
                 <div style={{marginTop:10, marginRight:10, float:"right"}}>
-                <Button type="primary" href='#/project/all/'>我的项目</Button>
+                <Button type="primary" href='#/app/project/all/'>我的项目</Button>
                 </div>
                 </div>
                 <div>

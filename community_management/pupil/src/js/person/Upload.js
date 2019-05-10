@@ -2,10 +2,14 @@ import React, {Component} from 'react';
 import {
     Upload, message, Button, Icon,
   } from 'antd';
+import Local from '../own/Local';
+import Fetch from '../own/Fetch';
+
+const userid = Local.get('userid');
   
   const props = {
     name: 'file',
-    action: '//jsonplaceholder.typicode.com/posts/',
+    action: `/api/users/avastar/${userid}/`,
     headers: {
       authorization: 'authorization-text',
     },
@@ -19,6 +23,20 @@ import {
         message.error(`${info.file.name} file upload failed.`);
       }
     },
+    customRequest(file){
+      const formData = new FormData();
+      formData.append('image', file.file);
+      Fetch.put(`/api/users/avastar/${userid}/`,{
+        body: formData
+      }).then((data) => {
+         Local.set("image", data.image);
+         message.info('修改成功!')
+      }).catch(err=>{
+        message.info('修改失败!')
+        console.log(err)
+      })
+    },
+    
     accept: 'input',
     showUploadList: false,
   };

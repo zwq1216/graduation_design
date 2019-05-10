@@ -4,7 +4,7 @@ import {Layout} from 'antd';
 import ProjectNav from './ProjectNav';
 import Nav from '../home/Nav';
 import {
-    Info,
+    All, Pub, Manage
 } from './ManagerProject';
 import '../../css/person/person.css';
 
@@ -34,7 +34,7 @@ class AllProject extends Component {
 
     render(){
         return(
-            <PersonContent app={<Info/>}/>
+            <PersonContent app={<All/>}/>
         )
     }
 }
@@ -54,7 +54,7 @@ class PubProject extends Component {
 
     render(){
         return(
-            <PersonContent />
+            <PersonContent app={<Pub/>}/>
         )
     }
 }
@@ -64,7 +64,7 @@ class ManagerProject extends Component {
 
     render(){
         return(
-            <PersonContent />
+            <PersonContent app={<Manage/>}/>
         )
     }
 }

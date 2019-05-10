@@ -5,19 +5,19 @@ import history from '../own/history';
 class CommunityNav extends Component {
   handleClick = (e) => {
     if(e.key == 2){
-      history.push('/community/apply');
+      history.push('/app/community/apply');
     }
     else if(e.key == 3){
-      history.push('/community/pushmessage');
+      history.push('/app/community/pushmessage');
     }
     else if(e.key == 4){
-      history.push('/community/manage');
+      history.push('/app/community/manage');
     }
     else if(e.key == 5){
-      history.push('/community/monit');
+      history.push('/app/community/monit');
     }
     else{
-      history.push('/community');
+      history.push('/app/community/all');
     }
     
   }

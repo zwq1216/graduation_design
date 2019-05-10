@@ -159,17 +159,11 @@ const { TextArea } = Input;
 let length = 0;
 class NormalNewsForm extends Component {
     state = {
-        data: [],
         confirmDirty: false,
         autoCompleteResult: [],
         previewVisible: false,
         previewImage: '',
-        fileList: [{
-          uid: '-1',
-          name: 'xxx.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        }],
+        fileList: [],
       };
 
     handleCancel = () => this.setState({ previewVisible: false })
@@ -180,55 +174,43 @@ class NormalNewsForm extends Component {
               previewVisible: true,
             });
         }
-
-    //   handlePreview = (file) => {
-    //       if(length.length < 5){
-    //         length++;
-    //         this.setState({
-    //             previewImage: file.url || file.thumbUrl,
-    //             previewVisible: true,
-    //           });
-    //       }else{
-    //           return false;
-    //       }
-        
-    //   }
     
     handleChange = ({ fileList }) => this.setState({ fileList })
-   
-    componentDidMount(){
-        Fetch.get('/api/discuss/catagroy/')
-        .then((data) => {
-            this.setState({
-              data: data
-            })
-        }).catch(err=>{
-          console.log(err)
-        })
-      }    
   
     handleSubmit = (e) => {
       e.preventDefault();
       this.props.form.validateFieldsAndScroll((err, values) => {
-        console.log(values);
         if (!err) {
-            let objs = {
-                title: values.title,
-                catagory: values.catagory,
-                content: values.content
-            }
-            Fetch.post("/api/discuss/create/",{
-                body: JSON.stringify(objs)
+            const formData = new FormData();
+            formData.append('name', values.title);
+            formData.append('desc', values.desc);
+            this.state.fileList.forEach((value,index)=>{
+              formData.append(`images[${index}]`, value.originFileObj);
+          })
+            Fetch.post("/api/news/create/",{
+                body: formData
             }).then(data=>{
                 message.info("成功发布");
             }).catch(err=>{
+              console.log(err)
+              if ('images' in err){
+                this.props.form.setFields({
+                  images: {
+                        errors: [new Error(err.images[0])]
+                    }
+                })}
+                if ('error' in err){
+                  this.props.form.setFields({
+                    images: {
+                          errors: [new Error(err.error[0])]
+                      }
+                  })}
               message.info("发布失败")
             })
         }
       });
     }
-  
-  
+
     render() {
         const { previewVisible, previewImage, fileList } = this.state;
         const uploadButton = (
@@ -237,7 +219,6 @@ class NormalNewsForm extends Component {
             <div className="ant-upload-text">Upload</div>
             </div>
         );
-      const data = this.state.data;
       const { getFieldDecorator } = this.props.form;
       const tailFormItemLayout = {
         wrapperCol: {
@@ -250,6 +231,12 @@ class NormalNewsForm extends Component {
             offset: 8,
           },
         },
+      };
+      const cprops = {
+        beforeUpload(file, fileList){
+            return false
+        },
+        // showUploadList: true,
       };
       return (
             <Form onSubmit={this.handleSubmit}>
@@ -272,28 +259,30 @@ class NormalNewsForm extends Component {
                 </span>
                 )}
             >
-                {getFieldDecorator('content', {
+                {getFieldDecorator('desc', {
                 rules: [{ required: true, message: '新闻活动内容不能为空', whitespace: true }],
                 })(
                 <TextArea rows={4} />
                 )}
             </Form.Item>
             
-            <Form.Item>
-                {getFieldDecorator('catagory', {
-                    rules: [
-                    { required: true, message: '上传图片' },
-                    ],
+            <Form.Item label={(
+                  <span>
+                      上传新闻活动图片
+                  </span>
+                  )}
+                >
+                {getFieldDecorator('images', {
                 })(
                     <div className="clearfix">
                         <Upload
-                            action="//jsonplaceholder.typicode.com/posts/"
+                            {...cprops}
                             listType="picture-card"
                             fileList={fileList}
                             onPreview={this.handlePreview}
                             onChange={this.handleChange}
                             >
-                            {fileList.length >= 3 ? null : uploadButton}
+                            {fileList.length >= 5 ? null : uploadButton}
                         </Upload>
                             <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
                             <img alt="新闻活动图片" style={{ width: '100%' }} src={previewImage} />

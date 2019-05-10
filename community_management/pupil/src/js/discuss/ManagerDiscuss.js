@@ -52,7 +52,7 @@ class All extends Component {
                 </div>
                 <Divider style={{ marginTop:0, marginBottom:0}}/>
                 <div className='con-content'>
-                    <div>
+                    <div style={{height:550}}>
                         <IndexTable rowKey='id' columns={columns} data={data} herf='/app/discuss/detail/'/>
                     </div>
                 </div>
@@ -107,7 +107,7 @@ class My extends Component {
                 </div>
                 <Divider style={{ marginTop:0, marginBottom:0}}/>
                 <div className='con-content'>
-                    <div>
+                    <div style={{height:550}}>
                         <IndexTable rowKey='id' columns={columns} data={data} herf='/app/discuss/detail/'/>
                     </div>
                 </div>
@@ -193,7 +193,7 @@ class Manage extends Component {
                 </div>
                 <Divider style={{ marginTop:0, marginBottom:0}}/>
                 <div className='con-content'>
-                    <div>
+                    <div style={{height:550}}>
                         <Table rowKey='id' columns={columns} data={data} herf='/app/discuss/detail/'/>
                     </div>
                 </div>
@@ -324,7 +324,7 @@ class Pub extends Component {
                 </div>
                 <Divider style={{ marginTop:0, marginBottom:0}}/>
                 <div className='con-content'>
-                    <div style={{width: 400}}>
+                    <div style={{width: 400, height:550}}>
                         <ThemeForm/>
                     </div>
                 </div>

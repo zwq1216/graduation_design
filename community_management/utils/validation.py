@@ -10,3 +10,15 @@ def is_valid_password(password):
             return True
         return False
     return False
+
+
+def is_phone(phone):
+    """验证手机号"""
+    if not phone:
+        return False
+    if not re.match(r'1\d{10}$', phone):
+        return False
+
+    return True
+
+

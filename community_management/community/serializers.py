@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.relations import PKOnlyObject
 from collections import OrderedDict
 from datetime import datetime
+from django.db.models import F
 
 from utils.constant import COMMUNITY_TYPE
 from .models import Community, CommunityFile, RecentPlan, Honor, Announcement
@@ -28,9 +29,12 @@ class CommunityCreateSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         validated_data = dict(list(self.validated_data.items()) + list(kwargs.items()))
+        image = validated_data['image']
         teacher_file = validated_data.pop('teacher_file', None)
         community_file = validated_data.pop('community_file', None)
         community_file_rule = validated_data.pop('community_file_rule', None)
+        if not image:
+            validated_data.pop('image')
 
         self.instance = Community.objects.create(**validated_data)
         CommunityFile.objects.create(name=teacher_file.name, file=teacher_file, community=self.instance,
@@ -105,10 +109,11 @@ class CommunityRetrieveSerializer(serializers.ModelSerializer):
         teacher = CommunityFile.objects.filter(community=obj, community_file_type=0).first()
         community = CommunityFile.objects.filter(community=obj, community_file_type=1).first()
         rule = CommunityFile.objects.filter(community=obj, community_file_type=2).first()
+        # 构建media文件路径
         if teacher:
             teacher_file = agree + '://' + host + CommunityFileSerializer(teacher).data['file']
         if community:
-            community_file =  CommunityFileSerializer(teacher).data['file']
+            community_file = CommunityFileSerializer(teacher).data['file']
         if rule:
             community_file_rule = agree + '://' + host + CommunityFileSerializer(teacher).data['file']
         data = {'teacher_file': teacher_file, 'community_file': community_file,
@@ -116,12 +121,14 @@ class CommunityRetrieveSerializer(serializers.ModelSerializer):
 
         return data
 
+    # 获取荣誉列表
     def get_honor(self, obj):
         queryset = Honor.objects.filter(community=obj)
         serializer = HonorSerializer(queryset, many=True)
 
         return serializer.data
 
+    # 获取公告列表
     def get_announcement(self, obj):
         queryset = Announcement.objects.filter(community=obj).order_by('-add_time')[:5]
         serializer = AnnouncementSerializer(queryset, many=True)
@@ -130,18 +137,16 @@ class CommunityRetrieveSerializer(serializers.ModelSerializer):
 
 
 class CommunityUpdateSerializer(serializers.ModelSerializer):
-    no = serializers.CharField(allow_null=True, allow_blank=True, max_length=30, read_only=True, label='社团编号')
-    name = serializers.CharField(allow_null=True, allow_blank=True, max_length=50, label='社团名称')
     objective = serializers.CharField(allow_null=True, allow_blank=True, max_length=200, label='社团宗旨')
-    image = serializers.FileField(allow_null=True, label='社团头像')
-    desc = serializers.CharField(allow_blank=True, max_length=500, label='社团描述')
+    # image = serializers.FileField(allow_null=True, allow_empty_file=True, label='社团头像')
+    desc = serializers.CharField(allow_blank=True, allow_null=True, max_length=500, label='社团描述')
     plan_count = serializers.IntegerField(allow_null=True, label='计划人数')
-    real_count = serializers.IntegerField(allow_null=True, label='实际人数')
+    score = serializers.IntegerField(allow_null=True, label='社团积分')
+    community_type = serializers.IntegerField(required=False, allow_null=True, label='所属类型')
 
     class Meta:
         model = Community
-        fields = ('id', 'no', 'name', 'objective', 'image', 'desc', 'plan_count', 'real_count', 'college',
-                  'community_type')
+        fields = ('id', 'objective', 'desc', 'plan_count', 'score', 'community_type')
 
     def update(self, instance, validated_data):
         validated_data = {k: v for k, v in validated_data.items() if v}
@@ -175,18 +180,23 @@ class CommunityUpdateSerializer(serializers.ModelSerializer):
 class ScoreRecordSerializer(serializers.ModelSerializer):
     deduct = serializers.IntegerField(required=True, label='扣除的积分')
     desc = serializers.CharField(allow_null=True, allow_blank=True, max_length=500, label='原因')
-    add_time = serializers.DateTimeField(read_only=True, label='添加时间')
+    add_time = serializers.DateTimeField(format="%Y-%m-%d", read_only=True, label='添加时间')
 
     class Meta:
         model = ScoreRecord
-        fields = ('id', 'score', 'deduct', 'desc', 'add_time')
+        fields = ('id', 'deduct', 'desc', 'community', 'add_time')
+
+    def validate_deduct(self, deduct):
+        if deduct < 0:
+            raise serializers.ValidationError('扣除积分不能为负')
+        return deduct
 
     def create(self, validated_data):
         user = self.context['request'].user
         validated_data.update({'user': user})
         instance = super().create(validated_data)
-        score = instance.score
-        score.score -= instance.deduct
+        score = instance.community
+        score.score = F('score') - instance.deduct
         score.save()
 
         return instance
@@ -197,7 +207,7 @@ class ScoreRecordSerializer(serializers.ModelSerializer):
         if 'deduct' in validated_data.keys():
             c = instance.deduct - validated_data['deduct']
             score = instance.score
-            score.score += c
+            score.score = F('score') + c
             score.save()
 
         return super().update(instance, validated_data)

@@ -54,13 +54,15 @@ class LoginView(generics.GenericAPIView):
     def post(self, request):
         agree = request.scheme
         host = request.META['HTTP_HOST']
+        # 获取登录的serializer类
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(data=request.data, context={'request': request})
-
+        # 验证输入数据的合法性
         if serializer.is_valid():
             user = User.objects.get(Q(username=request.data['username']) | Q(sno=request.data['username']))
             login(request, user)
             image = agree + '://' + host + request.user.image.url
+            # 构建前端所需的数据
             data = {"id": request.user.id, "username": request.user.username,
                     'role': request.user.role, 'image': image}
             return Response(data=data, status=status.HTTP_200_OK)

@@ -14,10 +14,24 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
         model = Project
         fields = ('id', 'name', 'desc', 'file', 'remuneration')
 
+    def validate_remuneration(self, remuneration):
+        if remuneration < 0:
+            raise serializers.ValidationError("酬金不能为负")
+        return remuneration
+
+    def validate_file(self, file):
+        if file.content_type != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            raise serializers.ValidationError("仅支持上传docx格式的文档")
+        if file.size > 50*1024*1024:
+            raise serializers.ValidationError('文档大小不能超过50M')
+        return file
+
     def create(self, validated_data):
         user = self.context['request'].user
-        validated_data.update({'pub_user': user, 'status': 0})
-
+        if user.role == 4 or user.role == 3:
+            validated_data.update({'pub_user': user, 'status': 0})
+        else:
+            validated_data.update({'pub_user': user, 'status': 3})
         instance = Project.objects.create(**validated_data)
 
         return instance

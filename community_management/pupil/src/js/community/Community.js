@@ -4,8 +4,9 @@ import {Layout} from 'antd';
 import CommunityNav from './CommunityNav';
 import Nav from '../home/Nav';
 import {
-    Info,
+    All, Pub, Manage, Edit, Monit
 } from './ManagerCommunity';
+import Fetch from '../own/Fetch';
 import '../../css/person/person.css';
 
 const {Sider, Content} = Layout;
@@ -34,7 +35,7 @@ class AllCommunty extends Component {
 
     render(){
         return(
-            <PersonContent app={<Info/>}/>
+            <PersonContent app={<All/>}/>
         )
     }
 }
@@ -44,7 +45,7 @@ class ApplyCommunty extends Component {
 
     render(){
         return(
-            <PersonContent />
+            <PersonContent app={<Pub/>}/>
         )
     }
 }
@@ -54,7 +55,34 @@ class ManageCommunty extends Component {
 
     render(){
         return(
-            <PersonContent />
+            <PersonContent app={<Manage/>}/>
+        )
+    }
+}
+
+// 编辑社团
+class EditCommunty extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+          data: {}
+        }
+      }
+    componentDidMount(){
+        const id = this.props.match.match.params.id;
+        Fetch.get(`/api/community/detail/${id}/`)
+        .then((data) => {
+            this.setState({
+              data: data
+            })
+        }).catch(err=>{
+          console.log(err)
+        })
+    };
+    render(){
+        const data = this.state.data;
+        return(
+            <PersonContent app={<Edit data={data}/>}/>
         )
     }
 }
@@ -64,7 +92,7 @@ class MonitCommunty extends Component {
 
     render(){
         return(
-            <PersonContent />
+            <PersonContent app={<Monit/>}/>
         )
     }
 }
@@ -80,4 +108,4 @@ class PushMessage extends Component {
 }
 
 
-export {AllCommunty, ApplyCommunty, ManageCommunty, MonitCommunty, PushMessage};
+export {AllCommunty, ApplyCommunty, ManageCommunty, MonitCommunty, PushMessage, EditCommunty};

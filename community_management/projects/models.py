@@ -11,7 +11,7 @@ class Project(models.Model):
     desc = models.TextField(max_length=500, blank=True, null=True, verbose_name='项目描述')
     file = models.FileField(upload_to='project/%Y_%m', verbose_name='项目需求文件路径')
     pub_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pubuser', verbose_name='发布者')
-    status = models.IntegerField(default=0, choices=PROJECT_STATUS, verbose_name='项目状态')
+    status = models.IntegerField(default=3, choices=PROJECT_STATUS, verbose_name='项目状态')
     remuneration = models.IntegerField(default=0, blank=True, null=True, verbose_name='酬金')
     apply_user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL,
                                    related_name='papplyuser', verbose_name='申请人')

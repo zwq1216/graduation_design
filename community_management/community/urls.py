@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import CommunityCreateView, CommunityRetrieveView, CommunityUpdateView, CommunityListView,\
     ScoreRecordListCreateView, ScoreRecordRetrieveUpdateDestroyView, RecentPlanCreateView, RecentPlanUpdateView, \
-    RecentPlayRetrieveDestroyView, RecentPlayListView
+    RecentPlayRetrieveDestroyView, RecentPlayListView, CommunityDestroyView
 
 
 # 社团相关
@@ -10,6 +10,7 @@ urlpatterns = [
     path('', CommunityListView.as_view(), name='list-community'),
     path('create/', CommunityCreateView.as_view(), name='create-community'),
     path('detail/<int:pk>/', CommunityRetrieveView.as_view(), name='detail-community'),
+    path('del/<int:pk>/', CommunityDestroyView.as_view(), name='del-community'),
     path('update/<int:pk>/', CommunityUpdateView.as_view(), name='update-community'),
 ]
 

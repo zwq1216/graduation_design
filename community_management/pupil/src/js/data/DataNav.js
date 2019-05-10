@@ -5,13 +5,13 @@ import history from '../own/history';
 class DataNav extends Component {
   handleClick = (e) => {
     if(e.key == 2){
-      history.push('/data/share');
+      history.push('/app/data/share');
     }
     else if(e.key == 3){
-      history.push('/data/manager');
+      history.push('/app/data/manager');
     }
     else{
-      history.push('/data');
+      history.push('/app/data/all');
     }
     
   }

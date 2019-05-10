@@ -5,6 +5,7 @@ import {CommunityCardB} from '../global/Card';
 import Nav from '../home/Nav';
 import Bottom from '../home/Buttom';
 import Fetch from '../own/Fetch';
+import '../../css/person/community.css'
 
 const Search = Input.Search;
 
@@ -39,10 +40,10 @@ class CommunityIndex extends Component {
         <Search
           placeholder="社团名称"
           onSearch={value => {
-            Fetch.get('/api/data/?name='+value)
+            Fetch.get('/api/community/?name='+value)
             .then((data) => {
                 this.setState({
-                  data: data
+                  models: data
                 })
             }).catch(err=>{
               console.log(err)
@@ -52,10 +53,10 @@ class CommunityIndex extends Component {
         />
         </div>
         <div style={{marginTop:10, marginRight:10, float:"right"}}>
-          <Button type="primary" href='#/app/data/all/'>我的社团</Button>
+          <Button type="primary" href='#/app/community/all/'>我的社团</Button>
         </div>
         </div>
-        <div>
+        <div className='com-list'>
                 {
                     model.map(function(val, index, array){
                         return <CommunityCardB

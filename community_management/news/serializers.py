@@ -2,11 +2,8 @@ from rest_framework import serializers
 from rest_framework.relations import PKOnlyObject
 from collections import OrderedDict
 
-from .models import News, NewsImages, Praise
-
-
-class NewsImagesSerializer(serializers.ModelSerializer):
-    pass
+from .models import News, NewsImages
+from utils.constant import IMAGE_SCOPE, IMAGE_SIZE
 
 
 class NewsCreateSerializer(serializers.ModelSerializer):
@@ -14,8 +11,8 @@ class NewsCreateSerializer(serializers.ModelSerializer):
     desc = serializers.CharField(required=True, max_length=1000, label='描述')
     images = serializers.ListField(
         child=serializers.FileField(max_length=100000, allow_empty_file=True, allow_null=True, use_url=True),
+        allow_empty=True, allow_null=True, required=False
     )
-    # images = serializers.FileField(allow_null=True, allow_empty_file=True, label='活动图片')
 
     class Meta:
         model = News
@@ -23,6 +20,14 @@ class NewsCreateSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         role = self.context['request'].user.role
+        if 'images' in attrs.keys():
+            images = attrs['images']
+            for image in images:
+                if image.content_type not in IMAGE_SCOPE:
+                    raise serializers.ValidationError({"images": "仅支持png、jpg、jpeg格式"})
+
+                if image.size > IMAGE_SIZE:
+                    raise serializers.ValidationError({"images": "上传文件不要超过10MB"})
 
         if role == 0 or role == 1 or role == 2:
             raise serializers.ValidationError({'error': '只有超级管理员或监督人员可以创建新闻活动'})
@@ -35,7 +40,8 @@ class NewsCreateSerializer(serializers.ModelSerializer):
         validated_data.update({'user': user})
         instance = News.objects.create(**validated_data)
         if images:
-            NewsImages.objects.create(name=images.name, file=images, news=instance)
+            for image in images:
+                NewsImages.objects.create(name=image.name, file=image, news=instance)
 
         return instance
 

@@ -5,7 +5,7 @@ from datetime import datetime
 
 from .models import DataCategory, Data
 from users.local_model import DataPackage
-from utils.constant import DATA_STATUS, DISCLOSURE
+from utils.constant import DATA_STATUS, DISCLOSURE, PACKAGE_SIZE, PACKAGE_SCOPE
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -38,6 +38,26 @@ class DataCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Data
         fields = ('id', 'name', 'desc', 'type', 'package', 'disclosure')
+
+    def validate_disclosure(self, disclosure):
+        user = self.context['request'].user
+        if disclosure not in [1, 0]:
+            serializers.ValidationError('该选项不存在')
+        # 超级管理员和社团监管人员只能分享资料到公共区
+        if user.role == 3 or user.role == 4:
+            disclosure = 1
+        return disclosure
+
+    def validate_package(self, package):
+        if package:
+            if package.content_type not in PACKAGE_SCOPE:
+                raise serializers.ValidationError("仅支持tar,zip格式")
+
+            if package.size > PACKAGE_SIZE:
+                raise serializers.ValidationError("上传文件不要超过50MB")
+        else:
+            raise serializers.ValidationError("请上传资料包")
+        return package
 
     def save(self, **kwargs):
         user = self.context['request'].user

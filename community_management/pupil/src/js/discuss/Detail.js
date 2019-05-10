@@ -38,7 +38,7 @@ const Editor = ({
           onClick={onSubmit}
           type="primary"
         >
-          Add Comment
+          发表评论
         </Button>
       </Form.Item>
     </div>
@@ -74,6 +74,7 @@ class App extends React.Component {
               ...this.state.comments,
             ],
           });
+          message.info('评论成功');
         }).catch(err=>{
           console.log(err)
           message.info('评论失败');

@@ -4,7 +4,7 @@ import {Layout} from 'antd';
 import DataNav from './DataNav';
 import Nav from '../home/Nav';
 import {
-    Info,
+    All, Pub, Manage
 } from './ManagerData';
 import '../../css/person/person.css';
 
@@ -34,7 +34,7 @@ class AllData extends Component {
 
     render(){
         return(
-            <PersonContent app={<Info/>}/>
+            <PersonContent app={<All/>}/>
         )
     }
 }
@@ -44,7 +44,7 @@ class ShareData extends Component {
 
     render(){
         return(
-            <PersonContent />
+            <PersonContent app={<Pub/>}/>
         )
     }
 }
@@ -54,7 +54,7 @@ class ManagerData extends Component {
 
     render(){
         return(
-            <PersonContent />
+            <PersonContent app={<Manage/>}/>
         )
     }
 }

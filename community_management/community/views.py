@@ -1,5 +1,6 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from utils.filter_backends import CustomDjangoFilterBackend
 
 from .models import Community, RecentPlan
 from users.models import ScoreRecord
@@ -14,7 +15,14 @@ class CommunityCreateView(generics.CreateAPIView):
 
 
 class CommunityRetrieveView(generics.RetrieveAPIView):
-    """社团详情、删除社团"""
+    """社团详情"""
+    queryset = Community.objects.all()
+    serializer_class = CommunityRetrieveSerializer
+    permission_classes = (IsAuthenticated,)
+
+
+class CommunityDestroyView(generics.DestroyAPIView):
+    """删除社团"""
     queryset = Community.objects.all()
     serializer_class = CommunityRetrieveSerializer
     permission_classes = (IsAuthenticated,)
@@ -32,6 +40,8 @@ class CommunityListView(generics.ListAPIView):
     queryset = Community.objects.all()
     serializer_class = CommunityRetrieveSerializer
     permission_classes = (IsAuthenticated,)
+    filter_backends = (CustomDjangoFilterBackend,)
+    filterset_fields = ('name',)
 
     def get_queryset(self):
         top5 = self.request.GET.get('top5', None)

@@ -3,7 +3,7 @@
     height: 200px;
     float: left;
     margin-left: 20px;
-    background: royalblue;
+    background: gray;
 }
 
 .com-div2-style {
@@ -12,7 +12,7 @@
     float: left;
     margin-left: 20px;
     margin-top: 20px;
-    background: royalblue;
+    background: gray;
 }
 .com-div1-style:hover{
     cursor: pointer;

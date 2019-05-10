@@ -32,9 +32,7 @@ APPLY_STATUS = (
 # 申请类型
 APPLY_TYPE = (
     (0, '申请加入社团'),
-    (1, '申请发布资料'),
-    (2, '申请发布项目'),
-    (3, '申请创建社团')
+    (1, '申请创建社团')
 )
 # ================== Community END   ====================
 
@@ -71,9 +69,22 @@ DISCLOSURE = (
 PROJECT_STATUS = (
     (0, '悬赏中'),
     (1, '已承接'),
-    (2, '已完成')
+    (2, '已完成'),
+    (3, '未处理'),
+    (4, '未通过')
 )
 
+# 资料包类型
+PACKAGE_SCOPE = ('application/zip', 'application/x-tar')
+
+# 资料包的大小
+PACKAGE_SIZE = 50 * 1024 * 1024
+
+# 上传图片的大小限制
+IMAGE_SIZE = 10 * 1024 * 1024
+
+# 上传图片类型限制
+IMAGE_SCOPE = ('image/jpeg', 'image/jpg', 'image/png')
 # ================== PROJECT END   ======================
 
 

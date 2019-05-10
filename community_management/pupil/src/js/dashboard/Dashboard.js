@@ -7,8 +7,9 @@ class Dashboard extends React.Component {
     
     render() {
         const data = this.props.data;
-        console.log(data)
+        if(data.files){
         return (
+        
             <div className="gutter-example button-demo">
                 <Row gutter={10}>
                     <Col className="gutter-row" md={8}>
@@ -48,19 +49,19 @@ class Dashboard extends React.Component {
                             <Card bordered={false}>
                                 <h3>社团导师简历</h3>
                                 <div className="pb-m">
-                                    {/* <a href={data.files.teacher_file}>下载导师简历</a> */}
+                                    <a href={data.files.teacher_file}>下载导师简历</a>
                                 </div>
                             </Card>
                             <Card bordered={false}>
                                 <h3>社团简章</h3>
                                 <div className="pb-m">
-                                {/* <a href={data.files.community_file}>下载社团简章</a> */}
+                                <a href={data.files.community_file}>下载社团简章</a>
                                 </div>
                             </Card>
                             <Card bordered={false}>
                                 <h3>社团规章制度</h3>
                                 <div className="pb-m">
-                                {/* <a href={data.files.community_file_rule}>下载规章制度</a> */}
+                                <a href={data.files.community_file_rule}>下载规章制度</a>
                                 </div>
                             </Card>
                             <Card bordered={false}>
@@ -134,7 +135,12 @@ class Dashboard extends React.Component {
                     </Col>
                 </Row>
             </div>
-        )
+        )}
+        else{
+            return (
+                <div></div>
+            )
+        }
     }
 }
 

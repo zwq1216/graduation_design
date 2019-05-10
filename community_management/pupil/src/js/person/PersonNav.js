@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import { Menu, Icon, Avatar, Divider } from 'antd';
 import AvastarUpload from './Upload';
 import history from '../own/history';
+import Local from '../own/Local';
 
-import logo from '../../test/images/2.png';
+const image = Local.get('image');
 
 class PersonNav extends Component {
   handleClick = (e) => {
@@ -36,7 +37,7 @@ class PersonNav extends Component {
       <div>
         <div>
           <div style={{ marginLeft:60, marginTop:5}} onClick={this.handleClick}>
-            <Avatar shape="square" size={100} icon="user" src={logo} />
+            <Avatar shape="square" size={100} icon="user" src={image} />
           </div>
           <div style={{ textAlign: 'center', marginTop:5}}>
               用户名

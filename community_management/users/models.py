@@ -29,14 +29,14 @@ class User(AbstractUser):
 class ApplyRecord(models.Model):
     """申请记录"""
 
-    title = models.CharField(max_length=30, blank=False, null=False, verbose_name='申请标题')
-    apply_data = models.FileField(upload_to='apply/%Y_%m', verbose_name='申请材料路径')
+    content = models.TextField(max_length=500, blank=True, null=True, verbose_name='申请理由')
+    apply_data = models.FileField(upload_to='apply/%Y_%m', default='', verbose_name='申请材料路径')
     type = models.IntegerField(default=0, choices=APPLY_TYPE, verbose_name='申请类型')
     apply_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applyuser', verbose_name='申请人')
     status = models.IntegerField(default=0, choices=APPLY_STATUS, verbose_name='申请状态')
-    deal_user = models.ForeignKey(User, default='', blank=True, null=True, related_name='dealuser',
+    deal_user = models.ForeignKey(User, blank=True, null=True, related_name='dealuser',
                                   on_delete=models.SET_NULL, verbose_name='处理人')
-    users = models.ManyToManyField(User, related_name='many_user', verbose_name='发送人')
+    community = models.ForeignKey(Community, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='申请社团对象')
     add_time = models.DateTimeField(auto_now_add=True, verbose_name='添加时间')
 
     class Meta:

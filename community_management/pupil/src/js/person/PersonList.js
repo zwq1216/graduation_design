@@ -1,7 +1,11 @@
 import React, {Component} from 'react'; 
-import { List, Typography, Button,  Form, Input, Icon, Select, Card, Avatar,
-    } from 'antd';
+import { 
+  List, Typography, Button,  Form, Input, Icon, Select, Card, Avatar, message
+} from 'antd';
+import Local from '../own/Local';
+import Fetch from '../own/Fetch';
 
+const userid = Local.get('userid');
 
 // 消息列表
 class MessageList extends Component {
@@ -215,7 +219,41 @@ class EditUserForm extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        let objs = {
+          username: values.username,
+          password: values.password,
+          phone: values.phone
+        }
+        Fetch.patch(`/api/users/update/${userid}/`,{
+          body: JSON.stringify(objs)
+      }).then(data=>{
+          Local.set('username',data.username)
+          message.info('更新成功!')
+      }).catch(err=>{
+        message.info('更新失败!')
+        if ('username' in err){
+          this.props.form.setFields({
+            username: {
+                  errors: [new Error(err.username[0])]
+                }
+              })
+        }
+        if ('password' in err){
+          this.props.form.setFields({
+            password: {
+                  errors: [new Error(err.password[0])]
+                }
+              })
+        }
+        if ('phone' in err){
+          this.props.form.setFields({
+            phone: {
+                  errors: [new Error(err.phone[0])]
+                }
+              })
+        }
+  
+      })
       }
     });
   }
@@ -273,27 +311,14 @@ class EditUserForm extends Component {
         <Form.Item
           label={(
             <span>
-              学号/工号 
+            昵称
             </span>
           )}
         >
-          {getFieldDecorator('sno', {
-            rules: [{ required: true, message: '', whitespace: true }],
+          {getFieldDecorator('username', {
+            rules: [{ required: false, message: '', whitespace: true }],
           })(
-            <Input disabled={true} defaultValue={this.props.obj.sno}/>
-          )}
-        </Form.Item>
-        <Form.Item
-          label={(
-            <span>
-              真实姓名
-            </span>
-          )}
-        >
-          {getFieldDecorator('name', {
-            rules: [{ required: true, message: '', whitespace: true }],
-          })(
-            <Input disabled={true} defaultValue={this.props.obj.name} />
+            <Input />
           )}
         </Form.Item>
         <Form.Item
@@ -305,43 +330,13 @@ class EditUserForm extends Component {
         >
           {getFieldDecorator('password', {
             rules: [{
-              required: true, message: '',
+              required: false, message: '最少8个字符',
             }, {
               validator: this.validateToNextPassword,
             }],
           })(
             <Input type="password" />
           )}
-        </Form.Item>
-        <Form.Item
-            label="用户状态"
-            >
-            {getFieldDecorator('status', {
-                rules: [
-                { required: true, message: '', type: 'array' },
-                ],
-            })(
-                <Select placeholder="选择状态" size='small'>
-                    <Option value={0}>已激活</Option>
-                    <Option value={1}>未激活</Option>
-                </Select>
-            )}
-        </Form.Item>
-        <Form.Item
-            label="用户角色"
-            >
-            {getFieldDecorator('role', {
-                rules: [
-                { required: true, message: '', type: 'array' },
-                ],
-            })(
-                <Select placeholder="选择角色" size='small'>
-                    <Option value={0}>超级管理员</Option>
-                    <Option value={1}>社长</Option>
-                    <Option value={2}>社员</Option>
-                    <Option value={4}>普通用户</Option>
-                </Select>
-            )}
         </Form.Item>
         <Form.Item
           label={(
@@ -351,9 +346,9 @@ class EditUserForm extends Component {
             )}
         >
           {getFieldDecorator('phone', {
-            rules: [{ required: true, message: '请输入您的手机号码!' }],
+            rules: [{ required: false, message: '请输入您的手机号码!' }],
           })(
-            <Input style={{ width: '100%' }} defaultValue={this.props.obj.phone} />
+            <Input style={{ width: '100%' }} />
           )}
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>

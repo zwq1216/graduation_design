@@ -81,7 +81,7 @@ class DataIndex extends Component {
         />
         </div>
         <div style={{marginTop:10, marginRight:10, float:"right"}}>
-          <Button type="primary" href='#/data/all/'>我的资料</Button>
+          <Button type="primary" href='#/app/data/all/'>我的资料</Button>
         </div>
         </div>
         <div>
