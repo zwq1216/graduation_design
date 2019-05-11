@@ -1,6 +1,7 @@
 from django.contrib.auth import login, logout
 from django.http import HttpResponse
 from django.db.models import Q
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -135,6 +136,8 @@ class ApplyRecordListView(generics.ListAPIView):
     queryset = ApplyRecord.objects.all()
     serializer_class = ApplyRecordRetrieveDestroySerializer
     permission_classes = (IsAuthenticated,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('type', 'status')
 
 
 class CollegeListCreateView(generics.ListCreateAPIView):

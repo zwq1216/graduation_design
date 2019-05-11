@@ -13,9 +13,8 @@ class All extends Component {
         }
       }
       componentDidMount(){
-        Fetch.get('/api/data/')
+        Fetch.get('/api/data/?disclosure=0&status=3')
         .then((data) => {
-          console.log(data);
             this.setState({
               data: data
             })
@@ -105,7 +104,7 @@ class Manage extends Component {
             })
             message.info('删除成功');
         }).catch(err=>{
-            Fetch.get('/api/data/')
+            Fetch.get('/api/data/?status=0')
             .then((data) => {
                 this.setState({
                 data: data
@@ -118,7 +117,7 @@ class Manage extends Component {
         })
      };
       componentDidMount(){
-        Fetch.get('/api/data/')
+        Fetch.get('/api/data/?status=0')
         .then((data) => {
           console.log(data);
             this.setState({

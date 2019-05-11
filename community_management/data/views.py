@@ -54,13 +54,12 @@ class DataListView(generics.ListAPIView):
         top5 = self.request.GET.get('top5', None)
         user = self.request.user
         if top5:
-
-            return self.queryset.filter(status=3).order_by('-add_time')[:5]
+            return self.queryset.filter(disclosure=0, status=3).order_by('-add_time')[:5]
 
         if user.role == 3 or user.role == 4:
-            queryset = self.queryset.all()
+            queryset = self.queryset.filter(disclosure=0).order_by('-add_time')
         else:
-            queryset = self.queryset.filter(status=3)
+            queryset = self.queryset.filter().order_by('-add_time')
 
         return queryset
 

@@ -4,6 +4,7 @@ import {
 } from 'antd';
 import Local from '../own/Local';
 import Fetch from '../own/Fetch';
+import IndexTable from '../global/PTable';
 
 const userid = Local.get('userid');
 
@@ -34,19 +35,54 @@ const { TextArea } = Input;
 const { Option } = Select;
 class JoinClubForm1 extends Component {
     state = {
-      confirmDirty: false,
-      autoCompleteResult: [],
+      data: []
     };
-  
+    
+    componentDidMount(){
+      Fetch.get('/api/community/')
+      .then((data) => {
+          this.setState({
+            data: data
+          })
+      }).catch(err=>{
+        console.log(err)
+      })
+    }
+
     handleSubmit = (e) => {
       e.preventDefault();
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
+          const formData = new FormData();
+          formData.append('content', values.content);
+          formData.append('type', 0);
+          formData.append('community', values.community)
+
+          Fetch.post("/api/users/record/create/",{
+              body: formData
+          }).then(data=>{
+              message.info('申请成功!')
+          }).catch(err=>{
+            message.info('申请失败!')
+            if ('content' in err){
+              this.props.form.setFields({
+                content: {
+                      errors: [new Error(err.content[0])]
+                    }
+                  })
+            }
+            if ('community' in err){
+              this.props.form.setFields({
+                community: {
+                      errors: [new Error(err.community[0])]
+                    }
+                  })
+            }
+      
+          })
         }
       });
     }
-  
   
     render() {
       const { getFieldDecorator } = this.props.form;
@@ -62,8 +98,9 @@ class JoinClubForm1 extends Component {
           },
         },
       };
+      const data = this.state.data;
       return (
-          <Form>
+          <Form onSubmit={this.handleSubmit}>
             <Form.Item
                 label={(
                 <span>
@@ -71,7 +108,7 @@ class JoinClubForm1 extends Component {
                 </span>
                 )}
             >
-                {getFieldDecorator('nickname', {
+                {getFieldDecorator('content', {
                 rules: [{ required: true, message: '请填写申请理由', whitespace: true }],
                 })(
                 <TextArea rows={4} />
@@ -80,15 +117,17 @@ class JoinClubForm1 extends Component {
             <Form.Item
                 label="选择社团"
                 >
-                {getFieldDecorator('select-tags', {
+                {getFieldDecorator('community', {
                     rules: [
-                    { required: true, message: '请选择申请社团', type: 'array' },
+                    { required: true, message: '请选择申请社团'},
                     ],
                 })(
                     <Select placeholder="选择社团" size='small'>
-                        <Option value={1}>开拓者社团1</Option>
-                        <Option value={2}>开拓者社团2</Option>
-                        <Option value={3}>开拓者社团3</Option>
+                      {
+                        data.map(function(val, index, array){
+                          return <Option value={val.id}>{val.name}</Option>
+                        })
+                      }
                     </Select>
                 )}
             </Form.Item>
@@ -114,7 +153,24 @@ class QuitClubForm1 extends Component {
       e.preventDefault();
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
+          const formData = new FormData();
+          formData.append('content', values.content);
+          formData.append('type', 2);
+
+          Fetch.post("/api/users/record/create/",{
+              body: formData
+          }).then(data=>{
+              message.info('申请成功!')
+          }).catch(err=>{
+            message.info('申请失败!')
+            if ('content' in err){
+              this.props.form.setFields({
+                content: {
+                      errors: [new Error(err.content[0])]
+                    }
+                  })
+            }
+          })
         }
       });
     }
@@ -135,7 +191,7 @@ class QuitClubForm1 extends Component {
         },
       };
       return (
-          <Form>
+          <Form onSubmit={this.handleSubmit}>
             <Form.Item
                 label={(
                 <span>
@@ -143,7 +199,7 @@ class QuitClubForm1 extends Component {
                 </span>
                 )}
             >
-                {getFieldDecorator('nickname', {
+                {getFieldDecorator('content', {
                 rules: [{ required: true, message: '请填写申请理由', whitespace: true }],
                 })(
                 <TextArea rows={4} />
@@ -363,4 +419,463 @@ const EditUser = Form.create({
   name: 'edituser', 
 })(EditUserForm);
 
-export {MessageList, JoinClubForm, QuitClubForm, ManageUserCard, UserCard, EditUser};
+class Data extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      data: []
+    }
+  }
+  componentDidMount(){
+    Fetch.get('/api/data/?disclosure=0&status=0')
+    .then((data) => {
+        this.setState({
+          data: data
+        })
+    }).catch(err=>{
+      console.log(err)
+    })
+}
+  onClick = (id) => {
+    Fetch.patch(`/api/data/update/${id}/`, {
+      body: JSON.stringify({'status': 3})
+    }).then((data) => {
+        Fetch.get('/api/data/?status=0')
+        .then((data) => {
+            this.setState({
+            data: data
+            })
+        }).catch(err=>{
+            console.log(err)
+        })
+        message.info('审核通过');
+    }).catch(err=>{
+        Fetch.get('/api/data/?status=0')
+        .then((data) => {
+            this.setState({
+            data: data
+            })
+        }).catch(err=>{
+            console.log(err)
+        })
+      console.log(err);
+      message.info('审核通过');
+    })
+ };
+ onClickN = (id) => {
+  Fetch.patch(`/api/data/update/${id}/`, {
+    body: JSON.stringify({'status': 2})
+  }).then((data) => {
+      Fetch.get('/api/data/?status=0')
+      .then((data) => {
+          this.setState({
+          data: data
+          })
+      }).catch(err=>{
+          console.log(err)
+      })
+      message.info('审核不通过');
+  }).catch(err=>{
+      Fetch.get('/api/data/?status=0')
+      .then((data) => {
+          this.setState({
+          data: data
+          })
+      }).catch(err=>{
+          console.log(err)
+      })
+    console.log(err);
+    message.info('审核不通过');
+  })
+};
+    render(){
+        const columns = [{
+            title: '资料名称',
+            dataIndex: 'name',
+            width: 100,
+          },{
+            title: '所属分类',
+            dataIndex: 'type',
+            width: 100,
+          },{
+            title: '下载',
+            width:70,
+            dataIndex: 'data',
+            render: (text) => (
+              <a href={text}>下载</a>
+            )
+          },{
+            title: '通过',
+            width:50,
+            dataIndex: 'id',
+            render: (id) => (
+                <Button type="primary" onClick={this.onClick.bind(this, id)}>审核通过</Button>
+            )
+          },{
+            title: '不通过',
+            width:50,
+            dataIndex: 'id',
+            render: (id) => (
+                <Button type="primary" onClick={this.onClickN.bind(this, id)}>审核不通过</Button>
+            )
+          }];
+          
+  const data = this.state.data;
+  return (
+    <div style={{height:800}}>
+        <IndexTable rowKey='id' columns={columns} data={data}/> 
+    </div>
+  );
+}
+}
+
+class Project extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      data: []
+    }
+  }
+  componentDidMount(){
+    Fetch.get('/api/projects/?status=3')
+    .then((data) => {
+        this.setState({
+          data: data
+        })
+    }).catch(err=>{
+      console.log(err)
+    })
+}
+  onClick = (id) => {
+    Fetch.patch(`/api/projects/update/${id}/`, {
+      body: JSON.stringify({'status': 0})
+    }).then((data) => {
+        Fetch.get('/api/projects/?status=3')
+        .then((data) => {
+            this.setState({
+            data: data
+            })
+        }).catch(err=>{
+            console.log(err)
+        })
+        message.info('审核通过');
+    }).catch(err=>{
+        Fetch.get('/api/projects/?status=3')
+        .then((data) => {
+            this.setState({
+            data: data
+            })
+        }).catch(err=>{
+            console.log(err)
+        })
+      console.log(err);
+      message.info('审核通过');
+    })
+ };
+ onClickN = (id) => {
+  Fetch.patch(`/api/projects/update/${id}/`, {
+    body: JSON.stringify({'status': 4})
+  }).then((data) => {
+      Fetch.get('/api/projects/?status=3')
+      .then((data) => {
+          this.setState({
+          data: data
+          })
+      }).catch(err=>{
+          console.log(err)
+      })
+      message.info('审核不通过');
+  }).catch(err=>{
+      Fetch.get('/api/projects/?status=3')
+      .then((data) => {
+          this.setState({
+          data: data
+          })
+      }).catch(err=>{
+          console.log(err)
+      })
+    console.log(err);
+    message.info('审核不通过');
+  })
+};
+    render(){
+      const columns = [{
+        title: '项目名称',
+        dataIndex: 'name',
+        width: 100,
+      },{
+        title: '赏金',
+        dataIndex: 'remuneration',
+        width: 30,
+      },{
+        title: '状态',
+        dataIndex: 'status',
+        width: 40,
+      },{
+        title: '发布者',
+        dataIndex: 'pub_user',
+        width: 40,
+      },{
+        title: '需求文件下载',
+        width:50,
+        dataIndex: 'file',
+        render: (text) => (
+          <a href={text}>下载</a>
+        )
+      },{
+        title: '通过',
+        width:50,
+        dataIndex: 'id',
+        render: (id) => (
+            <Button type="primary" onClick={this.onClick.bind(this, id)}>审核通过</Button>
+        )
+      },{
+        title: '不通过',
+        width:50,
+        dataIndex: 'id',
+        render: (id) => (
+            <Button type="primary" onClick={this.onClickN.bind(this, id)}>审核不通过</Button>
+        )
+      }];
+          
+  const data = this.state.data;
+  return (
+    <div style={{height:800}}>
+        <IndexTable rowKey='id' columns={columns} data={data}/> 
+    </div>
+  );
+}
+}
+
+class Community extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      data: []
+    }
+  }
+  componentDidMount(){
+    Fetch.get('/api/users/records/?type=1&status=0')
+    .then((data) => {
+        this.setState({
+          data: data
+        })
+    }).catch(err=>{
+      console.log(err)
+    })
+}
+  onClick = (id) => {
+    Fetch.patch(`/api/users/record/update/${id}/`, {
+      body: JSON.stringify({'status': 3})
+    }).then((data) => {
+        Fetch.get('/api/users/records/?type=1&status=0')
+        .then((data) => {
+            this.setState({
+            data: data
+            })
+        }).catch(err=>{
+            console.log(err)
+        })
+        message.info('审核通过');
+    }).catch(err=>{
+        Fetch.get('/api/users/records/?type=1&status=0')
+        .then((data) => {
+            this.setState({
+            data: data
+            })
+        }).catch(err=>{
+            console.log(err)
+        })
+      console.log(err);
+      message.info('审核通过');
+    })
+ };
+ onClickN = (id) => {
+  Fetch.patch(`/api/users/record/update/${id}/`, {
+    body: JSON.stringify({'status': 2})
+  }).then((data) => {
+      Fetch.get('/api/users/records/?type=1&status=0')
+      .then((data) => {
+          this.setState({
+          data: data
+          })
+      }).catch(err=>{
+          console.log(err)
+      })
+      message.info('审核不通过');
+  }).catch(err=>{
+      Fetch.get('/api/users/records/?type=1&status=0')
+      .then((data) => {
+          this.setState({
+          data: data
+          })
+      }).catch(err=>{
+          console.log(err)
+      })
+    console.log(err);
+    message.info('审核不通过');
+  })
+};
+    render(){
+      const columns = [{
+        title: '申请理由',
+        dataIndex: 'content',
+        width: 200,
+      },{
+        title: '申请材料下载',
+        width:50,
+        dataIndex: 'apply_data',
+        render: (text) => (
+          <a href={text}>下载</a>
+        )
+      },{
+        title: '申请人',
+        dataIndex: 'apply_user',
+        width: 40,
+      },{
+        title: '申请时间',
+        dataIndex: 'add_time',
+        width: 40,
+      },{
+        title: '通过',
+        width:50,
+        dataIndex: 'id',
+        render: (id) => (
+            <Button type="primary" onClick={this.onClick.bind(this, id)}>审核通过</Button>
+        )
+      },{
+        title: '不通过',
+        width:50,
+        dataIndex: 'id',
+        render: (id) => (
+            <Button type="primary" onClick={this.onClickN.bind(this, id)}>审核不通过</Button>
+        )
+      }];
+          
+  const data = this.state.data;
+  return (
+    <div style={{height:800}}>
+        <IndexTable rowKey='id' columns={columns} data={data}/> 
+    </div>
+  );
+}
+}
+
+class Join extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      data: []
+    }
+  }
+  componentDidMount(){
+    Fetch.get('/api/users/records/?type=1&status=0')
+    .then((data) => {
+        this.setState({
+          data: data
+        })
+    }).catch(err=>{
+      console.log(err)
+    })
+}
+  onClick = (id) => {
+    Fetch.patch(`/api/users/record/update/${id}/`, {
+      body: JSON.stringify({'status': 3})
+    }).then((data) => {
+        Fetch.get('/api/users/records/?type=1&status=0')
+        .then((data) => {
+            this.setState({
+            data: data
+            })
+        }).catch(err=>{
+            console.log(err)
+        })
+        message.info('审核通过');
+    }).catch(err=>{
+        Fetch.get('/api/users/records/?type=1&status=0')
+        .then((data) => {
+            this.setState({
+            data: data
+            })
+        }).catch(err=>{
+            console.log(err)
+        })
+      console.log(err);
+      message.info('审核通过');
+    })
+ };
+ onClickN = (id) => {
+  Fetch.patch(`/api/users/record/update/${id}/`, {
+    body: JSON.stringify({'status': 2})
+  }).then((data) => {
+      Fetch.get('/api/users/records/?type=1&status=0')
+      .then((data) => {
+          this.setState({
+          data: data
+          })
+      }).catch(err=>{
+          console.log(err)
+      })
+      message.info('审核不通过');
+  }).catch(err=>{
+      Fetch.get('/api/users/records/?type=1&status=0')
+      .then((data) => {
+          this.setState({
+          data: data
+          })
+      }).catch(err=>{
+          console.log(err)
+      })
+    console.log(err);
+    message.info('审核不通过');
+  })
+};
+    render(){
+      const columns = [{
+        title: '申请理由',
+        dataIndex: 'content',
+        width: 200,
+      },{
+        title: '申请材料下载',
+        width:50,
+        dataIndex: 'apply_data',
+        render: (text) => (
+          <a href={text}>下载</a>
+        )
+      },{
+        title: '申请人',
+        dataIndex: 'apply_user',
+        width: 40,
+      },{
+        title: '申请时间',
+        dataIndex: 'add_time',
+        width: 40,
+      },{
+        title: '通过',
+        width:50,
+        dataIndex: 'id',
+        render: (id) => (
+            <Button type="primary" onClick={this.onClick.bind(this, id)}>审核通过</Button>
+        )
+      },{
+        title: '不通过',
+        width:50,
+        dataIndex: 'id',
+        render: (id) => (
+            <Button type="primary" onClick={this.onClickN.bind(this, id)}>审核不通过</Button>
+        )
+      }];
+          
+  const data = this.state.data;
+  return (
+    <div style={{height:800}}>
+        <IndexTable rowKey='id' columns={columns} data={data}/> 
+    </div>
+  );
+}
+}
+
+export {
+  MessageList, JoinClubForm, QuitClubForm, ManageUserCard, UserCard, EditUser, Data, 
+  Project, Community, Join
+};

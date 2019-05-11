@@ -182,10 +182,18 @@ class ApplyRecordCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         # (0, '申请加入社团'),
         # (1, '申请创建社团')
+        # (2, '申请退出社团')
         type = attrs['type']
+        user = self.context['request'].user
+        if type == 0 and user.community:
+            raise serializers.ValidationError({'content': ['已加入社团']})
         if type == 1:
             if 'apply_data' not in attrs.keys() or ('apply_data' in attrs.keys() and not attrs['apply_data']):
                 raise serializers.ValidationError({'apply_data': ['申请创建社团必须上传申请文件']})
+        if type == 2:
+            if not user.community:
+                raise serializers.ValidationError({'content': ['未加入社团']})
+            attrs['community'] = user.community
 
         return attrs
 
@@ -199,25 +207,35 @@ class ApplyRecordCreateSerializer(serializers.ModelSerializer):
 
 
 class ApplyRecordUpdateSerializer(serializers.ModelSerializer):
-    title = serializers.CharField(max_length=30, allow_null=True, allow_blank=True, label='标题')
-    apply_data = serializers.FileField(allow_null=True, label='申请材料')
-    type = serializers.ChoiceField(allow_null=True, allow_blank=True, choices=APPLY_TYPE, label='申请类型')
     status = serializers.ChoiceField(allow_blank=True, allow_null=True, choices=APPLY_STATUS, label='申请状态')
 
     class Meta:
         model = ApplyRecord
-        fields = ('id', 'content', 'apply_data', 'type', 'status')
+        fields = ('id', 'status')
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        if user.role == 0 or user.role == 1 or user.role == 2:
+            raise serializers.ValidationError({'error': '无权修改'})
+        return attrs
 
     def update(self, instance, validated_data):
+        user = self.context['request'].user
+        if self.instance.status == 0:
+            validated_data.update({'deal_user': user})
+
         validated_data = {k: v for k, v in validated_data.items() if v}
 
         return super().update(instance, validated_data)
 
 
 class ApplyRecordRetrieveDestroySerializer(serializers.ModelSerializer):
+    apply_user = serializers.CharField(source='apply_user.realname')
+    add_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label='添加时间')
+
     class Meta:
         model = ApplyRecord
-        fields = ('id', 'content', 'apply_data', 'type', 'status', 'add_time')
+        fields = ('id', 'content', 'apply_data', 'type', 'status', 'apply_user', 'add_time')
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)

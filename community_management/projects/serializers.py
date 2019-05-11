@@ -50,19 +50,19 @@ class ProjectUpdateSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         user = self.context['request'].user
+        if user.role != 3 and user.role != 4 and user != self.instance.pub_user:
+            raise serializers.ValidationError({'error': '无权修改项目信息'})
 
-        if user != self.instance.pub_user:
-            raise serializers.ValidationError({'error': '仅发布者可以修改'})
-
-        if self.instance.status != 0:
-            raise serializers.ValidationError({'error': '已承接项目不可修改'})
+        if user.role != 3 and user.role != 4:
+            if self.instance.status == 3:
+                raise serializers.ValidationError({'error': '未处理项目不可修改'})
 
         return attrs
 
-    def update(self, instance, validated_data):
-        validated_data = {k: v for k, v in validated_data.items() if v}
-
-        return super().update(instance, validated_data)
+    # def update(self, instance, validated_data):
+    #     validated_data = {k: v for k, v in validated_data.items() if v}
+    #
+    #     return super().update(instance, validated_data)
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):

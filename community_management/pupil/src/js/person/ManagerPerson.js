@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Tabs, Divider, Button } from 'antd';
 
 import {
-    MessageList, JoinClubForm, QuitClubForm, ManageUserCard, EditUser
+    MessageList, JoinClubForm, QuitClubForm, ManageUserCard, EditUser, Data, Project, Community, Join
 } from './PersonList';
 import '../../css/person/person.css';
 import Local from '../own/Local';
@@ -103,16 +103,14 @@ class Message extends Component {
 
 // 待审核
 class Audit extends Component {
+    state = {
+        data: []
+    }
+    onTabClick = (key) => {
+        console.log(key)
+    }
     render(){
-        const data = [
-            {type: '未读', content: '食管裂孔从的女科技发布女包更好的'},
-            {type: '未读', content: '食管裂孔从的女科技发布女包更好的'},
-            {type: '未读', content: '食管裂孔从的女科技发布女包更好的'},
-            {type: '未读', content: '食管裂孔从的女科技发布女包更好的'},
-            {type: '未读', content: '食管裂孔从的女科技发布女包更好的'},
-            {type: '通知', content: '食管裂孔从的女科技发布女包更好的'},
-            {type: '通知', content: '食管裂孔从的女科技发布女包更好的'},
-        ];
+        const data = this.state.data;
         return(
             <div className='con'>
                 <div className='con-top'>
@@ -120,11 +118,12 @@ class Audit extends Component {
                 </div>
                 <Divider style={{ marginTop:0, marginBottom:0}}/>
                 <div className='con-content'>
-                    <Tabs onChange={callback_message} type="card" size='small'>
-                        <TabPane tab="资料" key="1"><MessageList data={data}/></TabPane>
-                        <TabPane tab="项目" key="2"><MessageList data={data}/></TabPane>
-                        <TabPane tab="创建社团" key="3"><MessageList data={data}/></TabPane>
-                        <TabPane tab="加入社团" key="4"><MessageList data={data}/></TabPane>
+                    <Tabs onTabClick={this.onTabClick} type="card" size='small'>
+                        <TabPane tab="资料" key="1"><Data/></TabPane>
+                        <TabPane tab="项目" key="2"><Project/></TabPane>
+                        <TabPane tab="创建社团" key="3"><Community/></TabPane>
+                        <TabPane tab="加入社团" key="4"><Join/></TabPane>
+                        <TabPane tab="退出社团" key="5"></TabPane>
                     </Tabs>
                 </div>
             </div>
@@ -135,15 +134,6 @@ class Audit extends Component {
 // 申请加入社团
 class JoinClub extends Component {
     render(){
-        const data = [
-            {type: '未读', content: '食管裂孔从的女科技发布女包更好的'},
-            {type: '未读', content: '食管裂孔从的女科技发布女包更好的'},
-            {type: '未读', content: '食管裂孔从的女科技发布女包更好的'},
-            {type: '未读', content: '食管裂孔从的女科技发布女包更好的'},
-            {type: '未读', content: '食管裂孔从的女科技发布女包更好的'},
-            {type: '通知', content: '食管裂孔从的女科技发布女包更好的'},
-            {type: '通知', content: '食管裂孔从的女科技发布女包更好的'},
-        ];
         return(
             <div className='con'>
                 <div className='con-top'>
@@ -151,12 +141,16 @@ class JoinClub extends Component {
                 </div>
                 <Divider style={{ marginTop:0, marginBottom:0}}/>
                 <div className='con-content'>
-                    <Tabs onChange={callback_message} type="card" size='small'>
+                    <div style={{height:550, width:400}}>
+                        <JoinClubForm/>
+                    </div>
+                    {/* <Tabs onChange={callback_message} type="card" size='small'>
+                        <div className='con-content-form'><JoinClubForm/></div>
                         <TabPane tab="申请加入" key="1">
                             <div className='con-content-form'><JoinClubForm/></div>
-                        </TabPane>
+                        </TabPane> 
                         <TabPane tab="申请记录" key="2"><MessageList data={data}/></TabPane>
-                    </Tabs>
+                    </Tabs>  */}
                 </div>
             </div>
         )
@@ -173,7 +167,7 @@ class QuitClub extends Component {
                 </div>
                 <Divider style={{ marginTop:0, marginBottom:0}}/>
                 <div className='con-content'>
-                    <div className='con-content-form'><QuitClubForm/></div>
+                    <div style={{height:550, width: 400}}><QuitClubForm/></div>
                 </div>
             </div>
         )

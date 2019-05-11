@@ -104,7 +104,7 @@ class DataUpdateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         role = self.context['request'].user.role
 
-        if role == 0 or role == 1:
+        if role == 0 or role == 1 or role == 2:
             raise serializers.ValidationError({'error': '普通用户和社团普通成员不可修改资料状态'})
 
         if self.instance.status != 0:
