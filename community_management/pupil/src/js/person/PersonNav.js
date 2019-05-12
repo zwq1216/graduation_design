@@ -5,8 +5,16 @@ import history from '../own/history';
 import Local from '../own/Local';
 
 const image = Local.get('image');
+const username = Local.get('username');
+const role = Local.get('role');
 
 class PersonNav extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      status: true
+    }
+  }
   handleClick = (e) => {
     if(e.key == 1){
       history.push('/app/person/message');
@@ -31,8 +39,14 @@ class PersonNav extends Component {
     }
     
   }
+  componentWillMount(){
+    if(role == 2 || role == 3 || role == 4){
+      this.setState({status: false})
+    }
+  }
 
   render() {
+    const status = this.state.status;
     return (
       <div>
         <div>
@@ -40,7 +54,7 @@ class PersonNav extends Component {
             <Avatar shape="square" size={100} icon="user" src={image} />
           </div>
           <div style={{ textAlign: 'center', marginTop:5}}>
-              用户名
+              {username}
           </div>
           <div style={{ marginLeft:55, marginTop:5}}>
             <AvastarUpload/>
@@ -53,12 +67,12 @@ class PersonNav extends Component {
           // defaultSelectedKeys={['1']}
           mode="inline"
         >
-          <Menu.Item key="1"><Icon type="mail" />消息</Menu.Item>
-          <Menu.Item key="2"><Icon type="book" />待审核</Menu.Item>
+          {/* <Menu.Item key="1"><Icon type="mail" />消息</Menu.Item> */}
+          <Menu.Item key="2" disabled={status}><Icon type="book" />待审核</Menu.Item>
           <Menu.Item key="3"><Icon type="calendar" />修改个人信息</Menu.Item>
           <Menu.Item key="4"><Icon type="calendar" />申请加入社团</Menu.Item>
           <Menu.Item key="5"><Icon type="calendar" />申请退出社团</Menu.Item>
-          <Menu.Item key="6"><Icon type="qrcode" />社团成员管理</Menu.Item>
+          <Menu.Item key="6" disabled={status}><Icon type="qrcode" />社团成员管理</Menu.Item>
         </Menu>
       </div>
     );

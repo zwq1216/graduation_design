@@ -21,7 +21,6 @@ class DiscussIndex extends Component {
   componentDidMount(){
     Fetch.get('/api/discuss/')
     .then((data) => {
-      console.log(data);
         this.setState({
           data: data
         })

@@ -4,12 +4,8 @@ from django.db.models import Q
 
 from .local_model import Register, Grade, College
 from .models import User, ApplyRecord
-from community.models import Community
-from projects.models import Project
-from data.models import Data
-from utils.constant import ROLE, APPLY_TYPE, APPLY_STATUS, PACKAGE_SCOPE, PACKAGE_SIZE
+from utils.constant import ROLE, APPLY_TYPE, APPLY_STATUS, PACKAGE_SCOPE, PACKAGE_SIZE, IMAGE_SCOPE, IMAGE_SIZE
 from utils.validation import is_valid_password, is_phone
-from community_management.settings import DEBUG
 
 
 class LoginSerializer(serializers.Serializer):
@@ -136,6 +132,16 @@ class UserAvastarSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'image')
 
+    def validate_image(self, image):
+        if image:
+            if image.content_type not in IMAGE_SCOPE:
+                raise serializers.ValidationError({"images": "仅支持png、jpg、jpeg格式"})
+
+            if image.size > IMAGE_SIZE:
+                raise serializers.ValidationError({"images": "上传文件不要超过10MB"})
+
+        return image
+
 
 class UserRetrieveDestroySerializer(serializers.ModelSerializer):
     grade = serializers.CharField(source='grade.name', read_only=True)
@@ -163,6 +169,30 @@ class UserRetrieveDestroySerializer(serializers.ModelSerializer):
         return ret
 
 
+class ResetPasswordSerializer(serializers.Serializer):
+    original_password = serializers.CharField(max_length=50, required=True)
+    new_password = serializers.CharField(max_length=50, required=True)
+    repeat_password = serializers.CharField(max_length=50, required=True)
+
+    def validate(self, attrs):
+        request = self.context['request']
+        user = request.user
+        original_password = attrs['original_password']
+        new_password = attrs['new_password']
+        repeat_password = attrs['repeat_password']
+
+        if not user.check_password(original_password):
+            raise serializers.ValidationError({"original_password": ["原始密码不正确"]})
+
+        if not is_valid_password(new_password):
+            raise serializers.ValidationError({'new_password': ['请输入字母（区分大小写）、数字、符号中的至少两种8-64个字符']})
+
+        if new_password != repeat_password:
+            raise serializers.ValidationError({"repeat_password": ["两次密码不一致"]})
+
+        return attrs
+
+
 class ApplyRecordCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -185,8 +215,15 @@ class ApplyRecordCreateSerializer(serializers.ModelSerializer):
         # (2, '申请退出社团')
         type = attrs['type']
         user = self.context['request'].user
-        if type == 0 and user.community:
-            raise serializers.ValidationError({'content': ['已加入社团']})
+        if type == 0:
+            if user.community:
+                raise serializers.ValidationError({'content': ['已加入社团']})
+            record = ApplyRecord.objects.filter(type=0, status=0, apply_user=user).first()
+            if record:
+                raise serializers.ValidationError({'content': ['已申请，不可重复申请']})
+            if user.role != 0:
+                raise serializers.ValidationError({'content': ['仅普通用户可以申请']})
+
         if type == 1:
             if 'apply_data' not in attrs.keys() or ('apply_data' in attrs.keys() and not attrs['apply_data']):
                 raise serializers.ValidationError({'apply_data': ['申请创建社团必须上传申请文件']})
@@ -215,14 +252,26 @@ class ApplyRecordUpdateSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         user = self.context['request'].user
-        if user.role == 0 or user.role == 1 or user.role == 2:
+        if self.instance.type == 1 and (user.role == 0 or user.role == 1 or user.role == 2):
             raise serializers.ValidationError({'error': '无权修改'})
+
+        if (self.instance.type == 0 or self.instance.type == 2) and user.role != 2:
+            raise serializers.ValidationError({'error': '仅社长可以修改'})
+
         return attrs
 
     def update(self, instance, validated_data):
         user = self.context['request'].user
+        status = validated_data['status']
+        apply_user = self.instance.apply_user
         if self.instance.status == 0:
             validated_data.update({'deal_user': user})
+        if self.instance.type == 0 and status == 3:
+            apply_user.community = user.community
+            apply_user.save()
+        if self.instance.type == 2 and status == 3:
+            apply_user.community = None
+            apply_user.save()
 
         validated_data = {k: v for k, v in validated_data.items() if v}
 
@@ -235,7 +284,7 @@ class ApplyRecordRetrieveDestroySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ApplyRecord
-        fields = ('id', 'content', 'apply_data', 'type', 'status', 'apply_user', 'add_time')
+        fields = ('id', 'content', 'apply_data', 'type', 'status', 'apply_user', 'add_time', 'community')
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
@@ -249,6 +298,9 @@ class ApplyRecordRetrieveDestroySerializer(serializers.ModelSerializer):
             if ret['status'] == k:
                 ret['status'] = v
                 break
+
+        if instance.community:
+            ret['community'] = instance.community.name
 
         return ret
 

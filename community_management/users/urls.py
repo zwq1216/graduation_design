@@ -2,7 +2,8 @@ from django.urls import path
 
 from .views import UserCreateView, UserUpdateView, UserRetrieveDestroyView, UserListView, ApplyRecordCreateView, \
     ApplyRecordUpdateView, ApplyRecordRetrieveDestroyView, ApplyRecordListView, CollegeListCreateView, \
-    CollegeRrtrieveDestoryView, CollegeUpdateView, LoginView, LogoutView, UserAvastarView
+    CollegeRrtrieveDestoryView, CollegeUpdateView, LoginView, LogoutView, UserAvastarView, UserManageView, \
+    ResetPasswordView
 
 
 # 用户相关
@@ -11,7 +12,9 @@ urlpatterns = [
     path('create/', UserCreateView.as_view(), name='create-user'),
     path('update/<int:pk>/', UserUpdateView.as_view(), name='update-user'),
     path('ret_del/<int:pk>/', UserRetrieveDestroyView.as_view(), name='ret-del-user'),
-    path('avastar/<int:pk>/', UserAvastarView.as_view(), name='avastar')
+    path('avastar/<int:pk>/', UserAvastarView.as_view(), name='avastar'),
+    path('manage/<int:pk>/', UserManageView.as_view(), name='manage'),
+    path('changepassword/', ResetPasswordView.as_view(), name='changepassword'),
 ]
 
 # 用户全局配置相关

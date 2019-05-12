@@ -4,7 +4,7 @@ import {Layout} from 'antd';
 import CommunityNav from './CommunityNav';
 import Nav from '../home/Nav';
 import {
-    All, Pub, Manage, Edit, Monit
+    All, Pub, Manage, Edit, Monit, Create
 } from './ManagerCommunity';
 import Fetch from '../own/Fetch';
 import '../../css/person/person.css';
@@ -102,7 +102,7 @@ class PushMessage extends Component {
 
     render(){
         return(
-            <PersonContent />
+            <PersonContent app={<Create/>}/>
         )
     }
 }

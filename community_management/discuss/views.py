@@ -79,8 +79,9 @@ class MyDiscussListView(generics.ListAPIView):
 
         if comment:
             replay = ReplayTheme.objects.filter(user=user)
-            theme = [rep.user for rep in replay]
-            queryset1 = self.queryset.filter(user__in=theme)
+            theme = [rep.theme.id for rep in replay]
+            theme = list(set(theme))
+            queryset1 = self.queryset.filter(id__in=theme)
             queryset = queryset | queryset1
             return queryset.order_by('-add_time')
 

@@ -1,6 +1,7 @@
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.http import HttpResponse
 from django.db.models import Q
+from django.contrib.auth.hashers import make_password
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status
 from rest_framework.views import APIView
@@ -13,7 +14,8 @@ from .models import User, ApplyRecord
 from .local_model import College
 from .serializers import UserCreateSerializer, UserUpdateSerializer, UserAvastarSerializer, \
     UserRetrieveDestroySerializer, ApplyRecordCreateSerializer, ApplyRecordUpdateSerializer, \
-    ApplyRecordRetrieveDestroySerializer, CollegeListCreateSerializer, CollegeUpdateSerializer, LoginSerializer
+    ApplyRecordRetrieveDestroySerializer, CollegeListCreateSerializer, CollegeUpdateSerializer, LoginSerializer, \
+    ResetPasswordSerializer
 
 
 class HomeView(APIView):
@@ -81,34 +83,87 @@ class LogoutView(APIView):
         return Response(data={}, status=status.HTTP_200_OK)
 
 
+class ResetPasswordView(APIView):
+    """重置密码"""
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = ResetPasswordSerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            user = request.user
+            user.password = make_password(request.data['new_password'])
+            user.is_first_login = False
+            user.save()
+            update_session_auth_hash(request, user)
+            return Response(data={"id": user.id, "msg": ["操作成功"]}, status=status.HTTP_200_OK)
+        else:
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class UserCreateView(generics.CreateAPIView):
     """创建用户"""
     queryset = User.objects.all()
     serializer_class = UserCreateSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class UserUpdateView(generics.UpdateAPIView):
     """编辑用户"""
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class UserAvastarView(generics.UpdateAPIView):
     """修改用户头像"""
     queryset = User.objects.all()
     serializer_class = UserAvastarSerializer
+    permission_classes = (IsAuthenticated,)
+
+
+class UserManageView(generics.DestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserRetrieveDestroySerializer
+    permission_classes = (IsAuthenticated,)
+
+    def destroy(self, request, *args, **kwargs):
+        user = request.user
+        pk = kwargs['pk']
+        x_user = self.queryset.filter(pk=pk).first()
+        if not x_user:
+            return Response(data={'error': ['用户不存在']})
+
+        if user.role == 3 or user.role == 4:
+            x_user.delete()
+        elif user.role == 2:
+            x_user.community = None
+            x_user.save()
+
+        return Response(data={}, status=status.HTTP_200_OK)
 
 
 class UserRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     """用户删除、用户详情"""
     queryset = User.objects.all()
     serializer_class = UserRetrieveDestroySerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class UserListView(generics.ListAPIView):
     """用户列表"""
     queryset = User.objects.all()
     serializer_class = UserRetrieveDestroySerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = self.queryset.exclude(pk=user.id)
+
+        if user.role == 2:
+            queryset = queryset.filter(community=user.community)
+
+        return queryset
 
 
 class ApplyRecordCreateView(generics.CreateAPIView):
@@ -138,6 +193,17 @@ class ApplyRecordListView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('type', 'status')
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = self.queryset.all().order_by('-add_time')
+
+        if user.role == 2:
+            queryset = queryset.filter(community=user.community)
+        if user.role == 3 or user.role == 4:
+            queryset = queryset.filter(type=1)
+
+        return queryset
 
 
 class CollegeListCreateView(generics.ListCreateAPIView):

@@ -4,28 +4,66 @@ from collections import OrderedDict
 from datetime import datetime
 from django.db.models import F
 
-from utils.constant import COMMUNITY_TYPE
+from utils.constant import COMMUNITY_TYPE, IMAGE_SIZE, IMAGE_SCOPE
 from .models import Community, CommunityFile, RecentPlan, Honor, Announcement
 from users.models import ScoreRecord
 
 
 class CommunityCreateSerializer(serializers.ModelSerializer):
     """创建社团序列"""
-    no = serializers.CharField(max_length=30, label='社团编号')
-    name = serializers.CharField(max_length=50, label='社团名称')
+    no = serializers.CharField(required=True, max_length=30, label='社团编号')
+    name = serializers.CharField(required=True, max_length=50, label='社团名称')
     objective = serializers.CharField(allow_null=True, allow_blank=True, max_length=200, label='社团宗旨')
     image = serializers.FileField(allow_null=True, label='社团头像')
     desc = serializers.CharField(allow_blank=True, max_length=500, label='社团描述')
-    plan_count = serializers.IntegerField(default=0, label='计划人数')
-    real_count = serializers.IntegerField(default=0, label='实际人数')
     teacher_file = serializers.FileField(required=True, label='导师简历')
     community_file = serializers.FileField(required=True, label='社团简章')
     community_file_rule = serializers.FileField(required=True, label='社团规章制度')
 
     class Meta:
         model = Community
-        fields = ('id', 'no', 'name', 'objective', 'image', 'desc', 'plan_count', 'real_count', 'college',
-                  'community_type', 'teacher_file', 'community_file', 'community_file_rule')
+        fields = ('id', 'no', 'name', 'objective', 'image', 'desc', 'plan_count', 'college', 'community_type',
+                  'teacher_file', 'community_file', 'community_file_rule')
+
+    def validate_name(self, name):
+        com = Community.objects.filter(name=name).first()
+        if com:
+            raise serializers.ValidationError("社团名称已经存在")
+        return name
+
+    def validate_image(self, image):
+        if image:
+            if image.content_type not in IMAGE_SCOPE:
+                raise serializers.ValidationError("仅支持png、jpg、jpeg格式")
+
+            if image.size > IMAGE_SIZE:
+                raise serializers.ValidationError("上传文件不要超过10MB")
+
+        return image
+
+    def validate_teacher_file(self, file):
+        if file.content_type != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            raise serializers.ValidationError("仅支持上传docx格式的文档")
+        if file.size > 20 * 1024 * 1024:
+            raise serializers.ValidationError('文档大小不能超过20M')
+
+        return file
+
+    def validate_community_file(self, file):
+        if file.content_type != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            raise serializers.ValidationError("仅支持上传docx格式的文档")
+        if file.size > 20 * 1024 * 1024:
+            raise serializers.ValidationError('文档大小不能超过20M')
+
+        return file
+
+    def validate_community_file_rule(self, file):
+        if file.content_type != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            raise serializers.ValidationError("仅支持上传docx格式的文档")
+        if file.size > 20 * 1024 * 1024:
+            raise serializers.ValidationError('文档大小不能超过20M')
+
+        return file
 
     def save(self, **kwargs):
         validated_data = dict(list(self.validated_data.items()) + list(kwargs.items()))

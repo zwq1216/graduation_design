@@ -6,8 +6,10 @@ import {
 } from './News';
 import NewsIndex from './Index';
 import history from '../own/history';
+import Local from '../own/Local';
 import NewsDetail from './detail';
 
+const role = Local.get('role');
 
 class NewsRouter extends Component {
 
@@ -26,12 +28,16 @@ class NewsRouter extends Component {
                         <Route path='/app/news/detail/:id' component={(match) => {
                             return <NewsDetail match={match}/>
                         }} />
-                        <Route path='/app/news/pub' component={(match) => {
-                            return <PubNews match={match}/>
-                        }} />
-                        <Route path='/app/news/manager' component={(match) => {
-                            return <ManagerNews match={match}/>
-                        }} />
+                        { (role == 3 || role == 4) &&
+                            <div>
+                                <Route path='/app/news/pub' component={(match) => {
+                                    return <PubNews match={match}/>
+                                }} />
+                                <Route path='/app/news/manager' component={(match) => {
+                                    return <ManagerNews match={match}/>
+                                }} />
+                            </div>
+                        }
                     </Switch>
                 </div>
             </Router>

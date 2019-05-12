@@ -5,7 +5,7 @@ import Fetch from '../own/Fetch';
 import history from  '../own/history';
 import ApplyForm from '../global/Apply';
 import Table from '../global/Table';
-import {EditForm, MonitForm} from './CommunityList';
+import {EditForm, MonitForm, CreateForm} from './CommunityList';
 
 
 class All extends Component {
@@ -17,6 +17,7 @@ class All extends Component {
       }
       
       componentDidMount(){
+        this._isMounted = true;
         Fetch.get('/api/community/')
         .then((data) => {
             this.setState({
@@ -26,6 +27,9 @@ class All extends Component {
           console.log(err)
         })
       }
+      componentWillUnMount = () => {
+        this._isMounted = false;
+    }
     render(){
         const model = this.state.models;
         return(
@@ -39,7 +43,7 @@ class All extends Component {
                 {
                     model.map(function(val, index, array){
                         return <CommunityCardB
-                        key={val.id}
+                        key={index}
                         id={val.id}
                         data={val.name}
                         img={val.image}
@@ -215,4 +219,24 @@ class Monit extends Component {
     }
 }
 
-export {All, Pub, Manage, Edit, Monit};
+class Create extends Component {
+    
+    render(){
+        const data = this.props.data;
+        return(
+            <div className='con'>
+                <div className='con-top'>
+                    <div className='con-top-title'>创建社团</div>
+                </div>
+                <Divider style={{ marginTop:0, marginBottom:0}}/>
+                <div className='con-content'>
+                   <div style={{height: 1100, width:500}}>
+                        <CreateForm/>
+                   </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+export {All, Pub, Manage, Edit, Monit, Create};

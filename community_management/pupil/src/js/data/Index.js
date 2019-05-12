@@ -19,9 +19,8 @@ class DataIndex extends Component {
         }
       }
       componentDidMount(){
-        Fetch.get('/api/data/')
+        Fetch.get('/api/data/?disclosure=0&status=3')
         .then((data) => {
-          console.log(data);
             this.setState({
               data: data
             })
@@ -67,7 +66,7 @@ class DataIndex extends Component {
           placeholder="输入关键字"
           // onSearch={value => console.log(value)}
           onSearch={value => {
-            Fetch.get('/api/data/?name='+value)
+            Fetch.get('/api/data/?name='+value+'&disclosure=0&status=3')
             .then((data) => {
               console.log(data);
                 this.setState({

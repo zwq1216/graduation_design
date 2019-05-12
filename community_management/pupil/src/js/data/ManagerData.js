@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import {message, Button, Divider} from 'antd';
 import IndexTable from '../global/PTable';
 import Fetch from '../own/Fetch';
+import Local from '../own/Local';
 import {EditForm} from './DataList';
 
+const userid = Local.get('userid');
 
 class All extends Component {
     constructor(props){
@@ -94,7 +96,7 @@ class Manage extends Component {
       }
       onClick = (id) => {
         Fetch.delete(`/api/data/ret_del/${id}/`).then((data) => {
-            Fetch.get('/api/data/')
+            Fetch.get(`/api/data/?manage=1`)
             .then((data) => {
                 this.setState({
                 data: data
@@ -104,7 +106,7 @@ class Manage extends Component {
             })
             message.info('删除成功');
         }).catch(err=>{
-            Fetch.get('/api/data/?status=0')
+            Fetch.get(`/api/data/?manage=1`)
             .then((data) => {
                 this.setState({
                 data: data
@@ -117,9 +119,8 @@ class Manage extends Component {
         })
      };
       componentDidMount(){
-        Fetch.get('/api/data/?status=0')
+        Fetch.get(`/api/data/?manage=1`)
         .then((data) => {
-          console.log(data);
             this.setState({
               data: data
             })

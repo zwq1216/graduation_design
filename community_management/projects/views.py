@@ -26,6 +26,14 @@ class ProjectRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     serializer_class = ProjectDetailSerializer
     permission_classes = (IsAuthenticated,)
 
+    def destroy(self, request, *args, **kwargs):
+        user = request.user
+        instance = self.get_object()
+        if user.role != 3 and user.role != 4 and instance.user != user:
+            return Response(data={'error': ['无权删除']}, status=status.HTTP_400_BAD_REQUEST)
+
+        return super().destroy(request, *args, **kwargs)
+
 
 class ProjectListView(generics.ListAPIView):
     """项目列表"""
@@ -33,20 +41,24 @@ class ProjectListView(generics.ListAPIView):
     serializer_class = ProjectDetailSerializer
     permission_classes = (IsAuthenticated,)
     filter_backends = (CustomDjangoFilterBackend,)
-    filterset_fields = ('name', 'status')
+    filterset_fields = ('name', 'status', 'pub_user')
 
     def get_queryset(self):
         request = self.request
         top5 = request.GET.get('top5', None)
+        manage = request.GET.get('manage', None)
         all = request.GET.get('all', None)
-
+        user = request.user
+        queryset = self.queryset.all().order_by('-add_time')
         if top5:
-            return self.queryset.filter(Q(status=0) | Q(status=1) | Q(status=2)).order_by('-add_time')[:5]
-
+            queryset = queryset.filter(Q(status=0) | Q(status=1) | Q(status=2))[:5]
         if all:
-            return self.queryset.filter(Q(status=0) | Q(status=1) | Q(status=2)).order_by('-add_time')
+            queryset = queryset.filter(Q(status=0) | Q(status=1) | Q(status=2))
+        if manage:
+            if user.role != 3 and user.role != 4:
+                queryset = queryset.filter(pub_user=user)
 
-        return self.queryset.all().order_by('-add_time')
+        return queryset
 
 
 

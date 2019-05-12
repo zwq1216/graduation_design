@@ -30,7 +30,7 @@ class ProjectNav extends Component {
         >
           <Menu.Item key="1"><Icon type="home" />全部项目</Menu.Item>
           <Divider style={{marginBottom:0, marginTop: 0}}/>
-          <Menu.Item key="2"><Icon type="book" />申请项目</Menu.Item>
+          {/* <Menu.Item key="2"><Icon type="book" />申请项目</Menu.Item> */}
           <Menu.Item key="3"><Icon type="book" />发布项目</Menu.Item>
           <Menu.Item key="4"><Icon type="qrcode" />项目管理</Menu.Item>
         </Menu>

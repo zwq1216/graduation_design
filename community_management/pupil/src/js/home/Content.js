@@ -157,7 +157,6 @@ class Data extends Component {
     componentDidMount(){
       Fetch.get('/api/data/?top5=1')
       .then((data) => {
-        console.log(data);
           this.setState({
             data: data
           })
@@ -265,7 +264,6 @@ class News extends Component {
   componentDidMount(){
     Fetch.get('/api/news/?top5=1')
     .then((data) => {
-      console.log(data);
         this.setState({
           data: data
         })

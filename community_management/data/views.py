@@ -1,8 +1,7 @@
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
 from utils.filter_backends import CustomDjangoFilterBackend
-from django.db.models import Q
 
 from .models import DataCategory, Data
 from .serializers import CategorySerializer, DataCreateSerializer, DataUpdateSerializer, DataDetailSerializer
@@ -41,6 +40,15 @@ class DataRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     serializer_class = DataDetailSerializer
     permission_classes = (IsAuthenticated,)
 
+    def destroy(self, request, *args, **kwargs):
+        user = request.user
+        instance = self.get_object()
+        if user.role != 3 and user.role != 4 and instance.user != user:
+
+            return Response(data={'error': ['无权删除']}, status=status.HTTP_400_BAD_REQUEST)
+
+        return super().destroy(request, *args, **kwargs)
+
 
 class DataListView(generics.ListAPIView):
     """资料列表"""
@@ -48,18 +56,20 @@ class DataListView(generics.ListAPIView):
     serializer_class = DataDetailSerializer
     permission_classes = (IsAuthenticated,)
     filter_backends = (CustomDjangoFilterBackend,)
-    filterset_fields = ('status', 'disclosure', 'type__name', 'name')
+    filterset_fields = ('status', 'disclosure', 'type__name', 'name', 'user')
 
     def get_queryset(self):
         top5 = self.request.GET.get('top5', None)
+        manage = self.request.GET.get('manage', None)
         user = self.request.user
+        queryset = self.queryset.all().order_by('-add_time')
         if top5:
             return self.queryset.filter(disclosure=0, status=3).order_by('-add_time')[:5]
-
+        if manage:
+            if user.role != 3 and user.role != 4:
+                queryset = queryset.filter(user=user)
         if user.role == 3 or user.role == 4:
-            queryset = self.queryset.filter(disclosure=0).order_by('-add_time')
-        else:
-            queryset = self.queryset.filter().order_by('-add_time')
+            queryset = queryset.filter(disclosure=0).order_by('-add_time')
 
         return queryset
 

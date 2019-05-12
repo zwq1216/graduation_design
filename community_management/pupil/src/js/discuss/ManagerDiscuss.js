@@ -69,7 +69,7 @@ class My extends Component {
         }
       }
       componentDidMount(){
-        Fetch.get('/api/discuss/my/')
+        Fetch.get('/api/discuss/my/?comment=1')
         .then((data) => {
             this.setState({
               data: data

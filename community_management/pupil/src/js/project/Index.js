@@ -18,7 +18,7 @@ class ProjectsIndex extends Component {
         }
       }
       componentDidMount(){
-        Fetch.get('/api/projects/')
+        Fetch.get('/api/projects/?all=1')
         .then((data) => {
             this.setState({
               data: data
@@ -74,9 +74,8 @@ class ProjectsIndex extends Component {
                 placeholder="输入关键字"
                 // onSearch={value => console.log(value)}
                 onSearch={value => {
-                    Fetch.get('/api/projects/?name='+value)
+                    Fetch.get('/api/projects/?name='+value+'&all=1')
                     .then((data) => {
-                    console.log(data);
                         this.setState({
                         data: data
                         })

@@ -3,7 +3,10 @@ import React, { Component } from 'react';
 import { Divider, Button, message} from 'antd';
 import IndexTable from '../global/PTable';
 import Fetch from '../own/Fetch';
+import Local from '../own/Local';
 import {EditForm} from './ProjectList';
+
+const userid = Local.get('userid')
 
 
 class All extends Component {
@@ -14,7 +17,7 @@ class All extends Component {
         }
       }
       componentDidMount(){
-        Fetch.get('/api/projects/')
+        Fetch.get('/api/projects/?all=1')
         .then((data) => {
             this.setState({
               data: data
@@ -23,8 +26,6 @@ class All extends Component {
           console.log(err)
         })
       }
-     
-  
       render(){
           const columns = [{
               title: '项目名称',
@@ -119,7 +120,7 @@ class Manage extends Component {
         }
       }
       componentDidMount(){
-        Fetch.get('/api/projects/')
+        Fetch.get(`/api/projects/?manage=1`)
         .then((data) => {
             this.setState({
               data: data
@@ -130,7 +131,7 @@ class Manage extends Component {
       }
       onClick = (id) => {
         Fetch.delete(`/api/projects/ret_del/${id}/`).then((data) => {
-            Fetch.get('/api/projects/')
+            Fetch.get('/api/projects/manage=1')
             .then((data) => {
                 this.setState({
                 data: data
@@ -140,7 +141,7 @@ class Manage extends Component {
             })
             message.info('删除成功');
         }).catch(err=>{
-            Fetch.get('/api/projects/')
+            Fetch.get('/api/projects/manage=1')
             .then((data) => {
                 this.setState({
                 data: data

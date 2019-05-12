@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import { Tabs, Divider, Button } from 'antd';
+import { Tabs, Divider, Button, message } from 'antd';
 
 import {
-    MessageList, JoinClubForm, QuitClubForm, ManageUserCard, EditUser, Data, Project, Community, Join
+    MessageList, JoinClubForm, QuitClubForm, ManageUserCard, EditUser, Data, Project, Community, Join, Exit
 } from './PersonList';
 import '../../css/person/person.css';
 import Local from '../own/Local';
@@ -27,7 +27,7 @@ class Info extends Component {
               model: data
             })
         }).catch(err=>{
-          console.log(err)
+          console.log(err);
         })
       }
     render(){
@@ -123,7 +123,7 @@ class Audit extends Component {
                         <TabPane tab="项目" key="2"><Project/></TabPane>
                         <TabPane tab="创建社团" key="3"><Community/></TabPane>
                         <TabPane tab="加入社团" key="4"><Join/></TabPane>
-                        <TabPane tab="退出社团" key="5"></TabPane>
+                        <TabPane tab="退出社团" key="5"><Exit/></TabPane>
                     </Tabs>
                 </div>
             </div>
@@ -175,23 +175,24 @@ class QuitClub extends Component {
 }
 
 class UserInfo extends Component{
-
+    constructor(props){
+        super(props);
+        this.state = {
+            model: []
+        }
+    }
+    componentDidMount(){
+        Fetch.get('/api/users/')
+        .then((data) => {
+            this.setState({
+              model: data
+            })
+        }).catch(err=>{
+          console.log(err)
+        })
+    }
     render(){
-        const model = [
-            {name: '姓名', introduce: '我是一个人', image: ''},
-            {name: '姓名', introduce: '我是一个人', image: ''},
-            {name: '姓名', introduce: '我是一个人', image: ''},
-            {name: '姓名', introduce: '我是一个人', image: ''},
-            {name: '姓名', introduce: '我是一个人', image: ''},
-            {name: '姓名', introduce: '我是一个人', image: ''},
-            {name: '姓名', introduce: '我是一个人', image: ''},
-            {name: '姓名', introduce: '我是一个人', image: ''},
-            {name: '姓名', introduce: '我是一个人我是一个人我是一个人我是一个人', image: ''},
-            {name: '姓名', introduce: '我是一个人我是一个人我是一个人我是一个人', image: ''},
-            {name: '姓名', introduce: '我是一个人我是一个人我是一个人我是一个人', image: ''},
-            {name: '姓名', introduce: '我是一个人我是一个人我是一个人我是一个人', image: ''},
-            {name: '姓名', introduce: '我是一个人我是一个人我是一个人我是一个人', image: ''},
-        ];
+        const model = this.state.model;
 
         return(
             <div className='con'>

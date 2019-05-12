@@ -1,9 +1,10 @@
 import React, {Component} from 'react'
 import {
-    Form, Input, Tooltip, Icon, Button
+    Form, Input, Tooltip, Icon, Button, message
   } from 'antd';
 import {Layout} from 'antd';
-import {Link} from 'react-router-dom'; 
+import Fetch from '../own/Fetch'
+import history from '../own/history'
 
 import '../../css/global/register_login.css';
 import Logo from '../../images/logo.png';
@@ -19,8 +20,44 @@ class RegistrationForm extends React.Component {
       e.preventDefault();
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
-        }
+         let objs = {
+          original_password: values.original_password,
+          new_password: values.new_password,
+          repeat_password: values.repeat_password
+         }
+
+          Fetch.post(`/api/users/changepassword/`,{
+              body: JSON.stringify(objs)
+          }).then(data=>{
+              message.info('修改成功!')
+              history.push('/app')
+
+          }).catch(err=>{
+            message.info('修改失败!')
+            if ('repeat_password' in err){
+              this.props.form.setFields({
+                repeat_password: {
+                      errors: [new Error(err.repeat_password[0])]
+                    }
+                  })
+            }
+            if ('new_password' in err){
+              this.props.form.setFields({
+                new_password: {
+                      errors: [new Error(err.new_password[0])]
+                    }
+                  })
+            }
+            if ('original_password' in err){
+              this.props.form.setFields({
+                original_password: {
+                      errors: [new Error(err.original_password[0])]
+                    }
+                  })
+            }
+      
+          })
+      }
       });
     }
   
@@ -31,8 +68,8 @@ class RegistrationForm extends React.Component {
   
     compareToFirstPassword = (rule, value, callback) => {
       const form = this.props.form;
-      if (value && value !== form.getFieldValue('password')) {
-        callback('Two passwords that you enter is inconsistent!');
+      if (value && value !== form.getFieldValue('new_password')) {
+        callback('两次密码不一致');
       } else {
         callback();
       }
@@ -41,7 +78,7 @@ class RegistrationForm extends React.Component {
     validateToNextPassword = (rule, value, callback) => {
       const form = this.props.form;
       if (value && this.state.confirmDirty) {
-        form.validateFields(['confirm'], { force: true });
+        form.validateFields(['repeat_password'], { force: true });
       }
       callback();
     }
@@ -84,12 +121,12 @@ class RegistrationForm extends React.Component {
                 </span>
               )}
           >
-            {getFieldDecorator('password', {
+            {getFieldDecorator('original_password', {
               rules: [{
                 required: true, message: '请输入您的密码!',
               }],
             })(
-              <Input type="init_password" />
+              <Input type="password" />
             )}
           </Form.Item>
           <Form.Item
@@ -102,7 +139,7 @@ class RegistrationForm extends React.Component {
                 </span>
               )}
           >
-            {getFieldDecorator('password', {
+            {getFieldDecorator('new_password', {
               rules: [{
                 required: true, message: '请输入您的密码!',
               }, {
@@ -122,7 +159,7 @@ class RegistrationForm extends React.Component {
                 </span>
               )}
           >
-            {getFieldDecorator('confirm', {
+            {getFieldDecorator('repeat_password', {
               rules: [{
                 required: true, message: '请输入确认密码!',
               }, {
@@ -134,7 +171,6 @@ class RegistrationForm extends React.Component {
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
             <Button type="primary" htmlType="submit" className="login-form-button">修改密码</Button>
-            <Link to='/'>登录</Link>
           </Form.Item>
         </Form>
       );

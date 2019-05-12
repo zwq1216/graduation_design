@@ -80,7 +80,8 @@ class Nav extends Component {
                                 {/* <img src={user} className='user'/> */}
                                 <UserMenu/>
                             </div>
-                            <div className='top1' onClick={this.messageClick}>
+                            {/* <div className='top1' onClick={this.messageClick}> */}
+                            <div className='top1'>
                                 <img src={message} className='message'/>
                             </div>
                         </div>

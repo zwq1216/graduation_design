@@ -233,9 +233,9 @@ class ManageUserCard extends Component {
             size='small'
           >
             <Meta
-            avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-            title={this.props.item.name}
-            description={this.props.item.introduce}
+            avatar={<Avatar src={this.props.item.image} />}
+            title={this.props.item.realname}
+            // description={this.props.item.introduce}
             />
           </Card>
   
@@ -769,7 +769,7 @@ class Join extends Component {
     }
   }
   componentDidMount(){
-    Fetch.get('/api/users/records/?type=1&status=0')
+    Fetch.get('/api/users/records/?type=0&status=0')
     .then((data) => {
         this.setState({
           data: data
@@ -782,7 +782,7 @@ class Join extends Component {
     Fetch.patch(`/api/users/record/update/${id}/`, {
       body: JSON.stringify({'status': 3})
     }).then((data) => {
-        Fetch.get('/api/users/records/?type=1&status=0')
+        Fetch.get('/api/users/records/?type=0&status=0')
         .then((data) => {
             this.setState({
             data: data
@@ -792,7 +792,7 @@ class Join extends Component {
         })
         message.info('审核通过');
     }).catch(err=>{
-        Fetch.get('/api/users/records/?type=1&status=0')
+        Fetch.get('/api/users/records/?type=0&status=0')
         .then((data) => {
             this.setState({
             data: data
@@ -808,7 +808,7 @@ class Join extends Component {
   Fetch.patch(`/api/users/record/update/${id}/`, {
     body: JSON.stringify({'status': 2})
   }).then((data) => {
-      Fetch.get('/api/users/records/?type=1&status=0')
+      Fetch.get('/api/users/records/?type=0&status=0')
       .then((data) => {
           this.setState({
           data: data
@@ -818,7 +818,7 @@ class Join extends Component {
       })
       message.info('审核不通过');
   }).catch(err=>{
-      Fetch.get('/api/users/records/?type=1&status=0')
+      Fetch.get('/api/users/records/?type=0&status=0')
       .then((data) => {
           this.setState({
           data: data
@@ -836,12 +836,120 @@ class Join extends Component {
         dataIndex: 'content',
         width: 200,
       },{
-        title: '申请材料下载',
+        title: '申请社团',
+        width:70,
+        dataIndex: 'community',
+      },{
+        title: '申请人',
+        dataIndex: 'apply_user',
+        width: 40,
+      },{
+        title: '申请时间',
+        dataIndex: 'add_time',
+        width: 40,
+      },{
+        title: '通过',
         width:50,
-        dataIndex: 'apply_data',
-        render: (text) => (
-          <a href={text}>下载</a>
+        dataIndex: 'id',
+        render: (id) => (
+            <Button type="primary" onClick={this.onClick.bind(this, id)}>审核通过</Button>
         )
+      },{
+        title: '不通过',
+        width:50,
+        dataIndex: 'id',
+        render: (id) => (
+            <Button type="primary" onClick={this.onClickN.bind(this, id)}>审核不通过</Button>
+        )
+      }];
+          
+  const data = this.state.data;
+  return (
+    <div style={{height:800}}>
+        <IndexTable rowKey='id' columns={columns} data={data}/> 
+    </div>
+  );
+}
+}
+
+class Exit extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      data: []
+    }
+  }
+  componentDidMount(){
+    Fetch.get('/api/users/records/?type=2&status=0')
+    .then((data) => {
+        this.setState({
+          data: data
+        })
+    }).catch(err=>{
+      console.log(err)
+    })
+}
+  onClick = (id) => {
+    Fetch.patch(`/api/users/record/update/${id}/`, {
+      body: JSON.stringify({'status': 3})
+    }).then((data) => {
+        Fetch.get('/api/users/records/?type=2&status=0')
+        .then((data) => {
+            this.setState({
+            data: data
+            })
+        }).catch(err=>{
+            console.log(err)
+        })
+        message.info('审核通过');
+    }).catch(err=>{
+        Fetch.get('/api/users/records/?type=2&status=0')
+        .then((data) => {
+            this.setState({
+            data: data
+            })
+        }).catch(err=>{
+            console.log(err)
+        })
+      console.log(err);
+      message.info('审核通过');
+    })
+ };
+ onClickN = (id) => {
+  Fetch.patch(`/api/users/record/update/${id}/`, {
+    body: JSON.stringify({'status': 2})
+  }).then((data) => {
+      Fetch.get('/api/users/records/?type=2&status=0')
+      .then((data) => {
+          this.setState({
+          data: data
+          })
+      }).catch(err=>{
+          console.log(err)
+      })
+      message.info('审核不通过');
+  }).catch(err=>{
+      Fetch.get('/api/users/records/?type=2&status=0')
+      .then((data) => {
+          this.setState({
+          data: data
+          })
+      }).catch(err=>{
+          console.log(err)
+      })
+    console.log(err);
+    message.info('审核不通过');
+  })
+};
+    render(){
+      const columns = [{
+        title: '申请理由',
+        dataIndex: 'content',
+        width: 200,
+      },{
+        title: '申请社团',
+        width:70,
+        dataIndex: 'community',
       },{
         title: '申请人',
         dataIndex: 'apply_user',
@@ -877,5 +985,5 @@ class Join extends Component {
 
 export {
   MessageList, JoinClubForm, QuitClubForm, ManageUserCard, UserCard, EditUser, Data, 
-  Project, Community, Join
+  Project, Community, Join, Exit
 };

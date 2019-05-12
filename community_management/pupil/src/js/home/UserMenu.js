@@ -7,6 +7,8 @@ import {
 import '../../css/home/Nav.css';
 import user from '../../images/user.png';
 import history from '../own/history';
+import Fetch from '../own/Fetch';
+import Local from '../own/Local';
 
 const onClick = ({ key }) => {
   if(key == 1){
@@ -16,7 +18,13 @@ const onClick = ({ key }) => {
     history.push('/changepassword');
   }
   else{
-    message.info("退出登录");
+    Fetch.get(`/api/users/logout/`).then(data=>{
+      message.info('退出登录!')
+      Local.clear()
+      history.push('/')
+    }).catch(err=>{
+      message.info('退出失败!')
+    })
   }
 };
 

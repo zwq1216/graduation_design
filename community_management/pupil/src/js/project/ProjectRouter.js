@@ -22,9 +22,9 @@ class ProjectRouter extends Component {
                         <Route exact path='/app/project/all' component={(match) => {
                             return <AllProject match={match}/>
                         }} />
-                        <Route exact path='/app/project/apply' component={(match) => {
+                        {/* <Route exact path='/app/project/apply' component={(match) => {
                             return <ApplyProject match={match}/>
-                        }} />
+                        }} /> */}
                          <Route exact path='/app/project/pub' component={(match) => {
                             return <PubProject match={match}/>
                         }} />

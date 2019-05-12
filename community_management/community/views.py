@@ -1,5 +1,7 @@
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from datetime import datetime
 from utils.filter_backends import CustomDjangoFilterBackend
 
 from .models import Community, RecentPlan
@@ -64,11 +66,32 @@ class CommunityListView(generics.ListAPIView):
 #     permission_classes = (IsAuthenticated,)
 
 
-class ScoreRecordListCreateView(generics.ListCreateAPIView):
+class ScoreRecordListCreateView(generics.GenericAPIView):
     """积分记录创建、积分记录列表"""
     queryset = ScoreRecord.objects.all()
-    serializer_class = ScoreRecordSerializer
+    # serializer_class = ScoreRecordSerializer
     permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        queryset = self.queryset.all()
+        id = request.GET.get('id', None)
+        data = {
+            "deducts": [],
+            "date": []
+        }
+        try:
+            community = Community.objects.get(id=id)
+            queryset = queryset.filter(community=community).order_by('-add_time')[:30]
+            deducts = [obj.deduct for obj in queryset]
+            date = [datetime.strftime(obj.add_time, '%Y-%m-%d') for obj in queryset]
+            data = {
+                "deducts": deducts,
+                "date": date
+            }
+            return Response(data=data, status=status.HTTP_200_OK)
+        except Exception as e:
+            del e
+            return Response(data=data, status=status.HTTP_200_OK)
 
 
 class ScoreRecordRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
