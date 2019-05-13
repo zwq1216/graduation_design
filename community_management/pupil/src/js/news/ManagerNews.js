@@ -58,7 +58,9 @@ class All extends Component {
                 </div>
                 <Divider style={{ marginTop:0, marginBottom:0}}/>
                 <div className='con-content'>
+                  <div style={{height:800}}>
                     <IndexTable rowKey='id' columns={columns} data={data} herf='/app/news/detail/'/>
+                  </div>
                 </div>
             </div>
         )
@@ -144,11 +146,13 @@ class Manage extends Component {
     return(
         <div className='con'>
             <div className='con-top'>
-                <div className='con-top-title'>全部新闻消息</div>
+                <div className='con-top-title'>新闻活动管理</div>
             </div>
             <Divider style={{ marginTop:0, marginBottom:0}}/>
             <div className='con-content'>
+              <div style={{height: 800}}>
                 <Table rowKey='id' columns={columns} data={data} herf='/app/news/detail/'/>
+              </div>
             </div>
         </div>
     )

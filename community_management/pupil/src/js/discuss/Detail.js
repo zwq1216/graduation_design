@@ -168,8 +168,8 @@ class DiscussDetail extends Component {
                   <p>{data[i].content}</p>
                 ),
                 datetime: (
-                  <Tooltip title={moment().subtract(1, 'days').format(data[1].add_time)}>
-                    <span>{moment(data[1].add_time, 'YYYY-MM-DD HH:mm:ss').fromNow()}</span>
+                  <Tooltip title={moment().subtract(1, 'days').format(data[i].add_time)}>
+                    <span>{moment(data[i].add_time, 'YYYY-MM-DD HH:mm:ss').fromNow()}</span>
                   </Tooltip>
                 ),
               }

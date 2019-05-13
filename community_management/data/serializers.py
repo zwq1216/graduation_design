@@ -43,9 +43,9 @@ class DataCreateSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         if disclosure not in [1, 0]:
             serializers.ValidationError('该选项不存在')
-        # 超级管理员和社团监管人员只能分享资料到公共区
-        if user.role == 3 or user.role == 4:
-            disclosure = 1
+        # 超级管理员、社团监管人员或普通用户只能分享资料到公共区
+        if user.role == 3 or user.role == 4 or user.role == 0:
+            disclosure = 0
         return disclosure
 
     def validate_package(self, package):
@@ -64,7 +64,10 @@ class DataCreateSerializer(serializers.ModelSerializer):
         validated_data = dict(list(self.validated_data.items()) + list(kwargs.items()))
         package = validated_data.pop('package', None)
         package = DataPackage.objects.create(name=package.name, file=package)
-        validated_data.update({'user': user, 'status': 0, 'data': package})
+        if user.role == 3 or user.role == 4:
+            validated_data.update({'user': user, 'status': 3, 'data': package})
+        else:
+            validated_data.update({'user': user, 'status': 0, 'data': package})
         self.instance = Data.objects.create(**validated_data)
 
         return self.instance

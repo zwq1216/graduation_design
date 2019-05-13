@@ -105,7 +105,7 @@ class UserCreateView(generics.CreateAPIView):
     """创建用户"""
     queryset = User.objects.all()
     serializer_class = UserCreateSerializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
 
 class UserUpdateView(generics.UpdateAPIView):

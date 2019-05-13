@@ -25,6 +25,14 @@ class CommunityCreateSerializer(serializers.ModelSerializer):
         fields = ('id', 'no', 'name', 'objective', 'image', 'desc', 'plan_count', 'college', 'community_type',
                   'teacher_file', 'community_file', 'community_file_rule')
 
+    def validate_no(self, no):
+        if no:
+            com = Community.objects.filter(no=no).first()
+            if com:
+                raise serializers.ValidationError("社团编号已存在")
+
+        return no
+
     def validate_name(self, name):
         com = Community.objects.filter(name=name).first()
         if com:

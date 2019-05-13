@@ -1,8 +1,10 @@
 media/apply/*
+media/avastar/*
 media/community/*
 media/community_fille/*
 media/community_recent_plan/*
 media/data/*
 media/project/*
+media/mews/*
 *.pyc
 *.bak

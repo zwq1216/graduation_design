@@ -5,7 +5,7 @@ from datetime import datetime
 from utils.filter_backends import CustomDjangoFilterBackend
 
 from .models import Community, RecentPlan
-from users.models import ScoreRecord
+from users.models import ScoreRecord, User
 from .serializers import CommunityCreateSerializer, CommunityRetrieveSerializer, CommunityUpdateSerializer, \
     ScoreRecordSerializer, RecentPlanCreateUpdateSerializer, RecentPlanRetrieveDestroySerializer
 
@@ -28,6 +28,18 @@ class CommunityDestroyView(generics.DestroyAPIView):
     queryset = Community.objects.all()
     serializer_class = CommunityRetrieveSerializer
     permission_classes = (IsAuthenticated,)
+
+    def destroy(self, request, *args, **kwargs):
+        user = request.user
+        if user.role != 4:
+            return Response(data={'error': ['删除失败']}, status=status.HTTP_400_BAD_REQUEST)
+        instance = self.get_object()
+        objs = User.objects.filter(community=instance)
+        for obj in objs:
+            obj.role = 0
+            obj.save()
+        self.perform_destroy(instance)
+        return Response(data={}, status=status.HTTP_200_OK)
 
 
 class CommunityUpdateView(generics.UpdateAPIView):

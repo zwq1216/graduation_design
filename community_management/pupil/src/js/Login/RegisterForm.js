@@ -28,10 +28,8 @@ class NormalRegisterForm extends React.Component {
           Fetch.post("/api/users/create/",{
               body: JSON.stringify(objs)
           }).then(data=>{
-              console.log(data)
-              history.push('/login');
+              message.info('注册成功');
           }).catch(err=>{
-            console.log(err)
             if ('sno' in err){
               this.props.form.setFields({
                     sno: {
@@ -56,6 +54,7 @@ class NormalRegisterForm extends React.Component {
                     }
                   })
             }
+            message.info('注册失败');
           })
       }
     })

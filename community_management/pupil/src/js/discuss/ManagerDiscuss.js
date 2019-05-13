@@ -266,7 +266,7 @@ class NormalThemeForm extends Component {
                 validateFirst: true,
                 rules: [
                     {required: true, message: '标题不能为空'},
-                    {pattern: '^[^ ]+$', message: '不能输入空格'},
+                    // {pattern: '^[^ ]+$', message: '不能输入空格'},
                 ]
                 })(
                     <Input/>

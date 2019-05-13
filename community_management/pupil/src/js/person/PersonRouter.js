@@ -23,6 +23,15 @@ class PersonRouter extends Component {
                         {/* <Route exact path='/app/person/message' component={(match) => {
                             return <PersonMessage match={match}/>
                         }} /> */}
+                        <Route exact path='/app/person/edit' component={(match) => {
+                            return <PersonEdit match={match}/>
+                        }} />
+                        <Route exact path='/app/person/join_club' component={(match) => {
+                            return <PersonJoinClub match={match}/>
+                        }} />
+                        <Route exact path='/app/person/quit_club' component={(match) => {
+                            return <PersonQuitClub match={match}/>
+                        }} />
                         {(role == 2 || role == 3 || role == 4) &&
                             <div>
                                 <Route exact path='/app/person/audit' component={(match) => {
@@ -33,15 +42,6 @@ class PersonRouter extends Component {
                                 }} />
                             </div>
                         }
-                        <Route exact path='/app/person/edit' component={(match) => {
-                            return <PersonEdit match={match}/>
-                        }} />
-                        <Route exact path='/app/person/join_club' component={(match) => {
-                            return <PersonJoinClub match={match}/>
-                        }} />
-                        <Route exact path='/app/person/quit_club' component={(match) => {
-                            return <PersonQuitClub match={match}/>
-                        }} />
                     </Switch>
                     {/* <Disappear/> */}
                 </div>

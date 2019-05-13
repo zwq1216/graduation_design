@@ -39,7 +39,8 @@ class All extends Component {
                 </div>
                 <Divider style={{ marginTop:0, marginBottom:0}}/>
                 <div className='con-content'>
-                    <div style={{height: 550}}>
+                    {/* <div> */}
+                    <div style={{height: 1300}}>
                 {
                     model.map(function(val, index, array){
                         return <CommunityCardB
@@ -107,15 +108,15 @@ class Manage extends Component {
             })
             message.info('删除成功');
         }).catch(err=>{
-            Fetch.get('/api/community/')
-            .then((data) => {
-                this.setState({
-                data: data
-                })
-            }).catch(err=>{
-                console.log(err)
-            })
-          message.info('删除成功');
+            // Fetch.get('/api/community/')
+            // .then((data) => {
+            //     this.setState({
+            //     data: data
+            //     })
+            // }).catch(err=>{
+            //     console.log(err)
+            // })
+          message.info('无权删除');
         })
      };
      onEdit = (id) => {
