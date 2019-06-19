@@ -78,13 +78,13 @@ class CommunityListView(generics.ListAPIView):
 #     permission_classes = (IsAuthenticated,)
 
 
-class ScoreRecordListCreateView(generics.GenericAPIView):
+class ScoreRecordListCreateView(generics.ListCreateAPIView):
     """积分记录创建、积分记录列表"""
     queryset = ScoreRecord.objects.all()
-    # serializer_class = ScoreRecordSerializer
+    serializer_class = ScoreRecordSerializer
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         queryset = self.queryset.all()
         id = request.GET.get('id', None)
         data = {
